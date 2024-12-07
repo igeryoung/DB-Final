@@ -23,7 +23,7 @@ def handle_connection(conn, client_addr):
             action = get_selection(conn, welcome_action)
             
             user = action.exec(conn)
-            print(user)
+            # print(user)
             if user == -1:
                 raise Exception("End connection")
             

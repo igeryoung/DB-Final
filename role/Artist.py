@@ -1,4 +1,5 @@
 from .Role import Role
+from action.artist.ArtistAddAlbum import AddAlbum
 # from action.Exit import Exit
 # from action.Logout import Logout
 # from action.event.CreateEvent import CreateEvent
@@ -16,6 +17,7 @@ class Artist(Role):
         super().__init__(userid, username, pwd, email)
 
         self.user_action =  [
+                                AddAlbum("Upload a new album")
                                 # CreateEvent("Create Study Event"),
                                 # ListEvent("List All Available Study Events"),
                                 # JoinEvent("Join Study Event"),
