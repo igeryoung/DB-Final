@@ -1,8 +1,8 @@
 import socket
 from threading import Thread
-from DB_utils_hcy import db_connect
+from DB_utils_ping import db_connect
 from utils import *
-from action.QuerySong import QuerySong
+from action.SignUp import SignUp
 
 
 if __name__ == '__main__':
@@ -13,9 +13,11 @@ if __name__ == '__main__':
     bind_ip = "127.0.0.1"
     bind_port = 8800
 
-    test_action = QuerySong('user login', 'test')
+    test_action = SignUp('user sign up', 'test')
     data = {
-        "Song name": 'Love',
+        "email": 'ping@example.com',
+        "username": 'kent',
+        "password": 'password1333',
     }
     test_action.set_test_input(data)
     test_action.exec(None, None)

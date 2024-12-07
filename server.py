@@ -1,6 +1,6 @@
 import socket
 from threading import Thread
-from DB_utils import db_connect
+from DB_utils_ping import db_connect
 from utils import *
 from action.LogIn import LogIn
 from action.SignUp import SignUp
@@ -19,6 +19,7 @@ def handle_connection(conn, client_addr):
             action = get_selection(conn, welcome_action)
             
             user = action.exec(conn)
+            print(user)
             if user == -1:
                 raise Exception("End connection")
             
