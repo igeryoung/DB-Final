@@ -1,7 +1,7 @@
 
 from .Action import Action
 from role.User import User
-from role.Admin import Admin
+# from role.Admin import Admin
 from DB_utils import fetch_user
 
 class LogIn(Action):
