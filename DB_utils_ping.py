@@ -50,7 +50,7 @@ def print_table(cur):
     return tabulate(rows, headers=columns, tablefmt="github")
 
 
-# ============================= System function =============================
+# ============================= User Account =============================
 def db_register_user(username, pwd, email):
     # fetch largest uid
     cmd = """
@@ -77,7 +77,6 @@ def db_register_user(username, pwd, email):
 
     return userid
 
-
 def fetch_user_by_email(email):
     cmd = """
             SELECT user_id, user_name, password, is_admin
@@ -91,7 +90,7 @@ def fetch_user_by_email(email):
     userid, username, pwd, is_admin = data
     return userid, username, pwd, is_admin
 
-def username_exist(username):
+def user_name_exist(username):
 
     cmd = """
             select count(*) from "listener"
@@ -103,10 +102,74 @@ def username_exist(username):
     count = cur.fetchone()[0]
     return count > 0
 
-def email_exist(email):
+def user_email_exist(email):
 
     cmd = """
             select count(*) from "listener"
+            where email = %s;
+            """
+    # print(cur.mogrify(cmd, [email]))
+    cur.execute(cmd, [email])
+
+    count = cur.fetchone()[0]
+    return count > 0
+
+# ============================= Artist Account =============================
+
+def db_register_artist(artistname, pwd, email):
+    # fetch largest uid
+    cmd = """
+            SELECT MAX(artist_id)
+            FROM artist
+            """
+    # print(cur.mogrify(cmd, [artistname]))
+    cur.execute(cmd, [])
+    max_uid = int(cur.fetchone()[0])
+    cur_uid = max_uid + 1
+    cur_date = date.today()
+
+    cmd = """
+            insert into "artist" (artist_id, artist_name, debut_date, email, password, bio) 
+            values (%s, %s, %s, %s, %s, %s)
+            RETURNING artist_id;
+            """
+    cur.execute(cmd, [cur_uid, artistname, cur_date, email, pwd, ''])
+
+    artist_id = cur.fetchone()[0]
+    db.commit()
+
+    return artist_id
+
+
+def fetch_artist_by_email(email):
+    cmd = """
+            SELECT artist_id, artist_name, password
+            FROM artist
+            WHERE email = %s;
+            """
+    # print(cur.mogrify(cmd, [artistname]))
+    cur.execute(cmd, [email])
+    data = cur.fetchall()[0]
+
+    artistid, artistname, pwd, = data
+    return artistid, artistname, pwd
+
+def artist_name_exist(artistname):
+
+    cmd = """
+            select count(*) from "artist"
+            where artist_name = %s;
+            """
+    # print(cur.mogrify(cmd, [artistname]))
+    cur.execute(cmd, [artistname])
+
+    count = cur.fetchone()[0]
+    return count > 0
+
+def artist_email_exist(email):
+
+    cmd = """
+            select count(*) from "artist"
             where email = %s;
             """
     # print(cur.mogrify(cmd, [email]))

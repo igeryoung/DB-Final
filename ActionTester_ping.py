@@ -2,7 +2,7 @@ import socket
 from threading import Thread
 from DB_utils_ping import db_connect
 from utils import *
-from action.SignUp import SignUp
+from action.UserSignUp import SignUp
 
 
 if __name__ == '__main__':

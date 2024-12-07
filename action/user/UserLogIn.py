@@ -1,4 +1,4 @@
-from .Action import Action
+from ..Action import Action
 from role.User import User
 # from role.Admin import Admin
 from DB_utils_ping import fetch_user_by_email
@@ -9,7 +9,7 @@ def is_valid_email(email):
     email_pattern = r'^[^@]+@[^@]+\.[^@]+$'
     return re.match(email_pattern, email) is not None
 
-class LogIn(Action):
+class UserLogIn(Action):
     def exec(self, conn, user=None):
         count = 3
         email = self.read_input(conn, "email")

@@ -2,11 +2,15 @@ import socket
 from threading import Thread
 from DB_utils_ping import db_connect
 from utils import *
-from action.LogIn import LogIn
-from action.SignUp import SignUp
+from action import UserLogIn, UserSignUp, ArtistSignUp, ArtistLogIn
 
 
-welcome_action = [LogIn("Log-in"), SignUp("Sign-up")]
+welcome_action = [
+    UserLogIn("Log in as an [User]"), 
+    ArtistLogIn("Log in as an [Artist]"),
+    UserSignUp("Sign up as an [User]"), 
+    ArtistSignUp("Sign up as an [Artist]")
+]
 
 
 def handle_connection(conn, client_addr):
@@ -24,7 +28,7 @@ def handle_connection(conn, client_addr):
                 raise Exception("End connection")
             
             send_msg =  f'\n----------------------------------------\n\nHi {user.get_username()}!\n' + \
-                        f'[ User Info ] {user.get_info_msg_no_pwd()}\n'
+                        f'[ Info ] {user.get_info_msg_no_pwd()}\n'
             conn.send(send_msg.encode('utf-8'))
 
             while True: # Function Page

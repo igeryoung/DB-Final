@@ -27,5 +27,7 @@ class Artist(Role):
                                 # Logout("Logout"),
                                 # Exit("Leave System")
                             ]
+    def get_info_msg(self):
+        return f'Artist_id: {self.userid}, Artist_name: {self.username}, email: {self.email}, role: {type(self).__name__}'
         
 

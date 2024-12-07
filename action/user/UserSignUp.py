@@ -1,6 +1,6 @@
-from .Action import Action
+from ..Action import Action
 from role.User import User
-from DB_utils_ping import db_register_user, username_exist, email_exist
+from DB_utils_ping import db_register_user, user_name_exist, user_email_exist
 import re
 
 def is_valid_email(email):
@@ -8,7 +8,7 @@ def is_valid_email(email):
     email_pattern = r'^[^@]+@[^@]+\.[^@]+$'
     return re.match(email_pattern, email) is not None
 
-class SignUp(Action):
+class UserSignUp(Action):
     def exec(self, conn, user = None):
         # print(f'Enter SignUp Action')
 
@@ -17,13 +17,13 @@ class SignUp(Action):
             conn.send("email format incorrect".encode('utf-8'))
             email = self.read_input(conn, "correct email")
         
-        while email_exist(email):
+        while user_email_exist(email):
             conn.send("Email exist, ".encode('utf-8'))
             email = self.read_input(conn, "another email")
 
         # Read Username
         username = self.read_input(conn, "username")
-        while username_exist(username):
+        while user_name_exist(username):
             conn.send("Username exist, ".encode('utf-8'))
             username = self.read_input(conn, "another username")
         
