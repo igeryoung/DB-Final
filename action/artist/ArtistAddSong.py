@@ -1,22 +1,37 @@
 from ..Action import Action
-from DB_utils_ping import list_playlist
+from DB_utils_ping import db_register_song
 
 class AddSong(Action):
     def exec(self, conn, user):
-        album_name = self.read_input(conn, "album name")
-        print(f'Read album name: {album_name}')
+        song_name = self.read_input(conn, "song name")
+        print(f'Read song name: {song_name}')
 
-        while artist_album_exist(user.userid , album_name):
-            conn.send("Album name exist, ".encode('utf-8'))
-            album_name = self.read_input(conn, "another album name")
+        # while artist_song_exist(user.userid , song_name):
+        #     conn.send("Song name exist, ".encode('utf-8'))
+        #     song_name = self.read_input(conn, "another song name")
 
-        album_genre = self.read_input(conn, "album genre")
-        print(f'Read album genre: {album_genre}')
+        song_genre = self.read_input(conn, "song genre")
+        print(f'Read song genre: {song_genre}')
+        song_language = self.read_input(conn, "song language")
+        print(f'Read song language: {song_language}')
 
-        status = db_register_album(user.userid, album_name, album_genre)
+        song_album = self.read_input(conn, "song album")
+        print(f'Read song album: {song_album}')
+
+        if song_album == 'no':
+            song_album = None
+
+        status = db_register_song(
+            user.get_userid(), 
+            song_name, 
+            song_genre, 
+            song_language, 
+            album=song_album
+        )
+        
         if status:
             conn.send(f'''----------------------------------------\n
-                    Successfully create album! album_name = {album_name}\n'''.encode('utf-8'))
+                    Successfully create song! song_name = {song_name}\n'''.encode('utf-8'))
             return
         else:
             return -1
