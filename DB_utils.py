@@ -2,11 +2,14 @@ import sys
 import psycopg2
 from tabulate import tabulate
 from threading import Lock
-
-DB_NAME = "I'M_IN"
-DB_USER = "dbta"
+from dotenv import load_dotenv
+import os
+DB_NAME = "Listen"
+DB_USER = "postgres"
 DB_HOST = "127.0.0.1"
 DB_PORT = 5432
+load_dotenv()
+password = os.getenv('DB_PASSWORD')
 
 cur = None
 db = None
@@ -14,9 +17,10 @@ create_event_lock = Lock()
 
 def db_connect():
     exit_code = 0
+    # print(password)
     try:
         global db
-        db = psycopg2.connect(database=DB_NAME, user=DB_USER, password='1234', 
+        db = psycopg2.connect(database=DB_NAME, user=DB_USER, password=password, 
                               host=DB_HOST, port=DB_PORT)
         print("Successfully connect to DBMS.")
         global cur
@@ -39,6 +43,13 @@ def print_table(cur):
     columns = [desc[0] for desc in cur.description]
 
     return tabulate(rows, headers=columns, tablefmt="github")
+
+
+
+
+
+
+
 
 # ============================= System function =============================
 def db_register_user(username, pwd, email):
