@@ -206,3 +206,42 @@ def create_playlist(user_id, playlist_title, playlist_description, public_or_not
     if commit:
         db.commit()
     return playlist_id
+
+
+def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
+    ## playlist_id 要拿掉
+    query = f"""
+            INSERT INTO playlist_contain (playlist_id, song_id)
+            SELECT {playlist_id}, {song_id}
+            WHERE EXISTS (
+                SELECT 1
+                FROM playlist
+                WHERE playlist.playlist_id = {playlist_id}
+                AND playlist.listener_id = {user_id}
+            )
+            RETURNING playlist_id;
+            """
+    # print(cur.mogrify(query))
+    cur.execute(query)
+    print(f'After exec')
+    playlist_id = cur.fetchone()[0]
+    if commit:
+        db.commit()
+    return playlist_id
+
+
+def delete_song_from_playlist(user_id, playlist_id, song_id):
+    query =f"""
+            DELETE FROM playlist_contain
+            WHERE playlist_id = {playlist_id}
+            AND song_id = {song_id}
+            AND EXISTS (
+                SELECT 1
+                FROM playlist
+                WHERE playlist.playlist_id = playlist_contain.playlist_id
+                AND playlist.listener_id = {user_id}
+            );
+            """
+    
+    cur.execute(query)
+    db.commit()
