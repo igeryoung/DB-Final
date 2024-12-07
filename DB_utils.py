@@ -5,12 +5,21 @@ from threading import Lock
 from dotenv import load_dotenv
 import os
 
+<<<<<<< HEAD
 DB_NAME = "Listen"
 DB_USER = "postgres"
 DB_HOST = "127.0.0.1"
 DB_PORT = 5432
 load_dotenv()
 password = os.getenv("DB_PASSWORD")
+=======
+load_dotenv()
+DB_NAME = "Listen"
+DB_USER = "postgres"
+DB_HOST = "127.0.0.1"
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_PORT = os.getenv('DB_PORT')
+>>>>>>> 05f6d68 (temp store)
 
 cur = None
 db = None
@@ -22,6 +31,7 @@ def db_connect():
     # print(password)
     try:
         global db
+<<<<<<< HEAD
         db = psycopg2.connect(
             database=DB_NAME,
             user=DB_USER,
@@ -29,6 +39,10 @@ def db_connect():
             host=DB_HOST,
             port=DB_PORT,
         )
+=======
+        db = psycopg2.connect(database=DB_NAME, user=DB_USER, password=DB_PASSWORD, 
+                              host=DB_HOST, port=DB_PORT)
+>>>>>>> 05f6d68 (temp store)
         print("Successfully connect to DBMS.")
         global cur
         cur = db.cursor()

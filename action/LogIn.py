@@ -1,17 +1,17 @@
-
 from .Action import Action
 from role.User import User
 # from role.Admin import Admin
 from DB_utils import fetch_user
 
 class LogIn(Action):
-    def exec(self, conn):
-        userid = self.read_input(conn, "userid")
-        print(f'Read userid: {userid}')
+    def exec(self, conn, mode=''):
 
-        while not userid.isdigit():
+        email = self.read_input(conn, "email")
+        print(f'Read email: {email}')
+
+        while not email.isdigit():
             conn.send("Input is not numeric, ".encode('utf-8'))
-            userid = self.read_input(conn, "correct userid")
+            email = self.read_input(conn, "correct email")
 
 
         username, pwd, email, isUser, isAdmin = fetch_user(userid)
@@ -34,8 +34,8 @@ class LogIn(Action):
             conn.send(f'[EXIT]Connection close. Reason: Password incorrect.'.encode('utf-8'))
             return -1
         
-        if isAdmin:
-            return Admin(userid, username, pwd, email)
+        # if isAdmin:
+        #     return Admin(userid, username, pwd, email)
             
         else:
             return User(userid, username, pwd, email)

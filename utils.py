@@ -4,6 +4,7 @@ def get_selection(conn, options):
         option_idx = options.keys()
     else:
         option_idx = [x for x in range(1, len(options)+1)]
+    
     recv_msg = conn.recv(100).decode("utf-8")
     while int(recv_msg) not in option_idx:
         msg = "[INPUT]Wrong input, please select "

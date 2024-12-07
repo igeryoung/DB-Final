@@ -2,8 +2,8 @@ import socket
 from threading import Thread
 from DB_utils import db_connect
 from utils import *
-from actions.LogIn import LogIn
-from actions.SignUp import SignUp
+from action.LogIn import LogIn
+from action.SignUp import SignUp
 
 
 welcome_action = [LogIn("Log-in"), SignUp("Sign-up")]
