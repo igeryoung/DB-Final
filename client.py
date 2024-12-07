@@ -19,6 +19,7 @@ def receive_message(conn):
             if "[END]".encode('utf-8') in message:
                 break
         return message.decode('utf-8').replace("[END]", '').replace("[TABLE]", '')
+    
     except Exception:
         print("Receive message error.")
         return
@@ -82,7 +83,7 @@ if __name__ == "__main__":
 
             else:
                 print(recv_msg, end='')
-            
+    
     finally:
         print("Connection close.")
         client_socket.close()

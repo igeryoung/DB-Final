@@ -219,3 +219,52 @@ def list_artist_album(artist_id):
     cur.execute(query, [artist_id])
 
     return print_table(cur)
+
+def query_album_id_by_title_and_artist(artist_id, title):
+    cmd = """
+            SELECT album_id FROM "album"
+            WHERE artist_id = %s AND title = %s;
+          """
+    cur.execute(cmd, [artist_id, title])
+    result = cur.fetchone()
+    if result:
+        return result[0]
+    else:
+        return -1
+
+# ============================= Song Operation =============================
+
+def db_register_song(artist_id, title, genre, language, duration=60, album=None):
+    album_id = -1
+    if album:
+        album_id = query_album_id_by_title_and_artist(artist_id, album)
+    
+    if album_id != -1:
+        cmd = """
+                insert into "song" (likes,played_times,artist_id,album_id,duration,release_date,title,genre,audio_file,language) 
+                values (0, 0, %s, %s, %s, CURRENT_DATE, %s, %s, %s, %s)
+                """
+        cur.execute(cmd, [int(artist_id), int(album_id), int(duration), title, genre, 'test.mp3', language])
+    else:
+        try:
+            cmd = """
+                    insert into "song" (likes,played_times,artist_id,duration,release_date,title,genre,audio_file,language) 
+                    values (0, 0, %s,  %s, CURRENT_DATE, %s, %s, %s, %s)
+                    """
+            cur.execute(cmd, [int(artist_id), int(duration), title, genre, 'test.mp3', language])
+        except psycopg2.Error as e:
+            print(f"Database error: {e}")
+
+    db.commit()
+
+    return True
+
+def list_artist_song(artist_id):
+    query = """
+            SELECT release_date, title, duration, genre, language, likes, played_times
+            FROM song
+            WHERE artist_id = %s;
+            """
+    cur.execute(query, [int(artist_id)])
+
+    return print_table(cur)
