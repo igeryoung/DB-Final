@@ -175,7 +175,7 @@ def artist_email_exist(email):
     count = cur.fetchone()[0]
     return count > 0
 
-# ============================= Artist Operation =============================
+# ============================= Album Operation =============================
 
 def artist_album_exist(artist_id, album):
     cmd = """
@@ -209,3 +209,13 @@ def db_register_album(artist_id, album, genre):
     db.commit()
 
     return True
+
+def list_artist_album(artist_id):
+    query = """
+            SELECT release_date, title, genre, cover_image
+            FROM album
+            WHERE artist_id = %s;
+            """
+    cur.execute(query, [artist_id])
+
+    return print_table(cur)
