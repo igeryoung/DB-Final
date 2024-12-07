@@ -150,3 +150,15 @@ def list_song_from_playlist(playlist_name):
     cur.execute(query)
 
     return print_table(cur)
+
+def query_song(song_name):
+    
+    query = f"""
+            SELECT * 
+            FROM song as s
+            WHERE s.title LIKE '%{song_name}%';;
+            """
+    # print(cur.mogrify(query))
+    cur.execute(query)
+
+    return print_table(cur)
