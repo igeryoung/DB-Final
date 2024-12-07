@@ -131,8 +131,9 @@ def list_song_from_playlist(playlist_name):
     
     query = f"""
             SELECT 
-                s.title, 
-                a.name,
+                pl.title as playlist_title,
+                s.title as song_title, 
+                a.name as artist_name,
                 s.language, 
                 s.genre
             FROM 
@@ -154,11 +155,54 @@ def list_song_from_playlist(playlist_name):
 def query_song(song_name):
     
     query = f"""
-            SELECT * 
+            SELECT s.title, s.language, s.genre, s.likes, a.name
             FROM song as s
-            WHERE s.title LIKE '%{song_name}%';;
+            Join artist as a on s.artist_id = a.artist_id
+            WHERE s.title LIKE '%{song_name}%';
             """
     # print(cur.mogrify(query))
     cur.execute(query)
 
     return print_table(cur)
+
+def query_album(album_name):
+    
+    query = f"""
+            SELECT alb.title, alb.genre, a.name
+            FROM album as alb
+            Join artist as a on a.artist_id = alb.artist_id
+            WHERE alb.title LIKE '%{album_name}%';
+            """
+    # print(cur.mogrify(query))
+    cur.execute(query)
+
+    return print_table(cur)
+
+
+def query_artist(artist_name):
+    
+    query = f"""
+            SELECT *
+            FROM artist as a
+            WHERE a.name LIKE '%{artist_name}%';
+            """
+    # print(cur.mogrify(query))
+    cur.execute(query)
+
+    return print_table(cur)
+
+
+def create_playlist(user_id, playlist_title, playlist_description, public_or_not, commit=True):
+    ## playlist_id 要拿掉
+    query = f"""
+            INSERT INTO PLAYLIST (listener_id, title, creation_date, description, is_public)
+            Values({user_id}, '{playlist_title}', CURRENT_DATE, '{playlist_description}', '{public_or_not}')
+            RETURNING Playlist_id;
+            """
+    # print(cur.mogrify(query))
+    cur.execute(query)
+    print(f'After exec')
+    playlist_id = cur.fetchone()[0]
+    if commit:
+        db.commit()
+    return playlist_id
