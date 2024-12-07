@@ -23,6 +23,9 @@ class Action():
     def send_table(self, conn, table): 
         # Since the table is too long, buffer size is not enough for client to receive the whole message.
         # Add a [END] tag to mark the end of the message
-        conn.sendall(("[TABLE]" + '\n' + table + '\n' + "[END]").encode('utf-8'))
+        if self.mode == "onboard":
+            conn.sendall(("[TABLE]" + '\n' + table + '\n' + "[END]").encode('utf-8'))
+        else:
+            print(table)
 
         
