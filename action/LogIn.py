@@ -39,4 +39,3 @@ class LogIn(Action):
             
         else:
             return User(userid, username, pwd, email)
-    

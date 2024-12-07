@@ -9,14 +9,14 @@ from .Role import Role
 # from action.FindCourse import FindCourse
 # from action.FindReserved import FindReserved
 # from action.ModifyUserInfo import ModifyUserInfo
-
+from action.ListPlaylist import ListPlaylist
 
 class User(Role):
     def __init__(self, userid, username, pwd, email):
         super().__init__(userid, username, pwd, email)
 
         self.user_action =  [
-                                # CreateEvent("Create Study Event"),
+                                ListPlaylist("List All Playlists"),
                                 # ListEvent("List All Available Study Events"),
                                 # JoinEvent("Join Study Event"),
                                 # LeaveEvent("Leave Study Event"),
