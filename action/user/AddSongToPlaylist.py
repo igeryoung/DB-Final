@@ -1,4 +1,4 @@
-from .Action import Action
+from ..Action import Action
 from DB_utils_hcy import add_song_to_playlist
 ## Tested 
 class AddSongToPlaylist(Action):

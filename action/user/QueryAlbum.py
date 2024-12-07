@@ -1,4 +1,4 @@
-from .Action import Action
+from ..Action import Action
 from DB_utils_hcy import query_album
 ## Tested 
 class QueryAlbum(Action):

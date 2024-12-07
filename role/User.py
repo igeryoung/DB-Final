@@ -9,7 +9,7 @@ from .Role import Role
 # from action.FindCourse import FindCourse
 # from action.FindReserved import FindReserved
 # from action.ModifyUserInfo import ModifyUserInfo
-from action.ListPlaylist import ListPlaylist
+from action.user.ListPlaylist import ListPlaylist
 
 class User(Role):
     def __init__(self, userid, username, pwd, email):

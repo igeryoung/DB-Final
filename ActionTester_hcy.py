@@ -2,9 +2,9 @@ import socket
 from threading import Thread
 from DB_utils_hcy import db_connect
 from utils import *
-from action.ListSongFromPlaylist import ListSongFromPlaylist
-from action.AddSongToPlaylist import AddSongToPlaylist
-from action.DeleteSongFromPlaylist import DeleteSongFromPlaylist
+from action.user.ListSongFromPlaylist import ListSongFromPlaylist
+from action.user.AddSongToPlaylist import AddSongToPlaylist
+from action.user.DeleteSongFromPlaylist import DeleteSongFromPlaylist
 if __name__ == '__main__':
 
     db = db_connect()
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     test_action = DeleteSongFromPlaylist('user login', 'test')
     data = {
         "Playlist id": 1,
-        "Song id": 11
+        "Song id": 3
     }
     test_action.set_test_input(data)
     test_action.exec(None, None)
