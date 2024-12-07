@@ -140,7 +140,6 @@ def db_register_artist(artistname, pwd, email):
 
     return artist_id
 
-
 def fetch_artist_by_email(email):
     cmd = """
             SELECT artist_id, artist_name, password
@@ -155,7 +154,6 @@ def fetch_artist_by_email(email):
     return artistid, artistname, pwd
 
 def artist_name_exist(artistname):
-
     cmd = """
             select count(*) from "artist"
             where artist_name = %s;
@@ -167,7 +165,6 @@ def artist_name_exist(artistname):
     return count > 0
 
 def artist_email_exist(email):
-
     cmd = """
             select count(*) from "artist"
             where email = %s;
@@ -177,3 +174,48 @@ def artist_email_exist(email):
 
     count = cur.fetchone()[0]
     return count > 0
+
+# ============================= Album Operation =============================
+
+def artist_album_exist(artist_id, album):
+    cmd = """
+            select count(*) from "album"
+            where artist_id = %s and title = %s;
+            """
+    # print(cur.mogrify(cmd, [email]))
+    cur.execute(cmd, [artist_id, album])
+
+    count = cur.fetchone()[0]
+    return count > 0
+
+def db_register_album(artist_id, album, genre):
+    # fetch largest uid
+    cmd = """
+            SELECT MAX(album_id)
+            FROM album
+            """
+    # print(cur.mogrify(cmd, [artistname]))
+    cur.execute(cmd, [])
+    max_uid = int(cur.fetchone()[0])
+    cur_uid = max_uid + 1
+    cur_date = date.today()
+
+    cmd = """
+            insert into "album" (album_id, release_date, artist_id, title, genre, cover_image) 
+            values (%s, %s, %s, %s, %s, %s)
+            """
+    cur.execute(cmd, [cur_uid, cur_date, artist_id, album, genre, 'test.png'])
+
+    db.commit()
+
+    return True
+
+def list_artist_album(artist_id):
+    query = """
+            SELECT release_date, title, genre, cover_image
+            FROM album
+            WHERE artist_id = %s;
+            """
+    cur.execute(query, [artist_id])
+
+    return print_table(cur)
