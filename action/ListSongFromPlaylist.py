@@ -3,7 +3,7 @@ from DB_utils import list_song_from_playlist
 class ListSongFromPlaylist(Action):
     def exec(self, conn, user):
         print("List songs from your playlist")
-        playlist_name = self.read_input(conn, "instructor name")
+        playlist_name = self.read_input(conn, "playlist name")
         print(f'Looking for | {playlist_name}')
         
         table = list_song_from_playlist(playlist_name)
