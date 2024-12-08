@@ -1,47 +1,6 @@
-import sys
-import psycopg2
 from tabulate import tabulate
-from threading import Lock
-from dotenv import load_dotenv
-import os
 from datetime import date
-
-
-load_dotenv()
-DB_NAME = "Listen"
-DB_USER = "postgres"
-DB_HOST = "127.0.0.1"
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_PORT = os.getenv('DB_PORT')
-
-cur = None
-db = None
-create_event_lock = Lock()
-
-
-def db_connect():
-    exit_code = 0
-    # print(password)
-    try:
-        global db
-        db = psycopg2.connect(database=DB_NAME, user=DB_USER, password=DB_PASSWORD, 
-                              host=DB_HOST, port=DB_PORT)
-        print("Successfully connect to DBMS.")
-        global cur
-        cur = db.cursor()
-        return db
-
-    except psycopg2.Error as err:
-        print("DB error: ", err)
-        exit_code = 1
-    except Exception as err:
-        print("Internal Error: ", err)
-        raise err
-    # finally:
-    #     if db is not None:
-    #         db.close()
-    sys.exit(exit_code)
-
+from global_db import get_global_db
 
 def print_table(cur):
     rows = cur.fetchall()
@@ -52,6 +11,7 @@ def print_table(cur):
 
 # ============================= User Account =============================
 def db_register_user(username, pwd, email):
+    db, cur = get_global_db()
     # fetch largest uid
     cmd = """
             SELECT MAX(user_id)
@@ -78,6 +38,8 @@ def db_register_user(username, pwd, email):
     return userid
 
 def fetch_user_by_email(email):
+    db, cur = get_global_db()
+
     cmd = """
             SELECT user_id, user_name, password, is_admin
             FROM listener
@@ -91,6 +53,7 @@ def fetch_user_by_email(email):
     return userid, username, pwd, is_admin
 
 def user_name_exist(username):
+    db, cur = get_global_db()
 
     cmd = """
             select count(*) from "listener"
@@ -103,6 +66,7 @@ def user_name_exist(username):
     return count > 0
 
 def user_email_exist(email):
+    db, cur = get_global_db()
 
     cmd = """
             select count(*) from "listener"
@@ -117,6 +81,7 @@ def user_email_exist(email):
 # ============================= Artist Account =============================
 
 def db_register_artist(artistname, pwd, email):
+    db, cur = get_global_db()
     # fetch largest uid
     cmd = """
             SELECT MAX(artist_id)
@@ -141,6 +106,7 @@ def db_register_artist(artistname, pwd, email):
     return artist_id
 
 def fetch_artist_by_email(email):
+    db, cur = get_global_db()
     cmd = """
             SELECT artist_id, artist_name, password
             FROM artist
@@ -154,6 +120,7 @@ def fetch_artist_by_email(email):
     return artistid, artistname, pwd
 
 def artist_name_exist(artistname):
+    db, cur = get_global_db()
     cmd = """
             select count(*) from "artist"
             where artist_name = %s;
@@ -165,6 +132,7 @@ def artist_name_exist(artistname):
     return count > 0
 
 def artist_email_exist(email):
+    db, cur = get_global_db()
     cmd = """
             select count(*) from "artist"
             where email = %s;
@@ -178,6 +146,7 @@ def artist_email_exist(email):
 # ============================= Album Operation =============================
 
 def artist_album_exist(artist_id, album):
+    db, cur = get_global_db()
     cmd = """
             select count(*) from "album"
             where artist_id = %s and title = %s;
@@ -190,6 +159,7 @@ def artist_album_exist(artist_id, album):
 
 def db_register_album(artist_id, album, genre):
     # fetch largest uid
+    db, cur = get_global_db()
     cmd = """
             SELECT MAX(album_id)
             FROM album
@@ -211,6 +181,7 @@ def db_register_album(artist_id, album, genre):
     return True
 
 def list_artist_album(artist_id):
+    db, cur = get_global_db()
     query = """
             SELECT release_date, title, genre, cover_image
             FROM album
@@ -221,6 +192,7 @@ def list_artist_album(artist_id):
     return print_table(cur)
 
 def query_album_id_by_title_and_artist(artist_id, title):
+    db, cur = get_global_db()
     cmd = """
             SELECT album_id FROM "album"
             WHERE artist_id = %s AND title = %s;
@@ -235,6 +207,7 @@ def query_album_id_by_title_and_artist(artist_id, title):
 # ============================= Song Operation =============================
 
 def db_register_song(artist_id, title, genre, language, duration=60, album=None):
+    db, cur = get_global_db()
     album_id = -1
     if album:
         album_id = query_album_id_by_title_and_artist(artist_id, album)
@@ -246,20 +219,18 @@ def db_register_song(artist_id, title, genre, language, duration=60, album=None)
                 """
         cur.execute(cmd, [int(artist_id), int(album_id), int(duration), title, genre, 'test.mp3', language])
     else:
-        try:
-            cmd = """
-                    insert into "song" (likes,played_times,artist_id,duration,release_date,title,genre,audio_file,language) 
-                    values (0, 0, %s,  %s, CURRENT_DATE, %s, %s, %s, %s)
-                    """
-            cur.execute(cmd, [int(artist_id), int(duration), title, genre, 'test.mp3', language])
-        except psycopg2.Error as e:
-            print(f"Database error: {e}")
-
+        cmd = """
+                insert into "song" (likes,played_times,artist_id,duration,release_date,title,genre,audio_file,language) 
+                values (0, 0, %s,  %s, CURRENT_DATE, %s, %s, %s, %s)
+                """
+        cur.execute(cmd, [int(artist_id), int(duration), title, genre, 'test.mp3', language])
+        
     db.commit()
 
     return True
 
 def list_artist_song(artist_id):
+    db, cur = get_global_db()
     query = """
             SELECT release_date, title, duration, genre, language, likes, played_times
             FROM song

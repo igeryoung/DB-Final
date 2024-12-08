@@ -1,45 +1,5 @@
-import sys
-import psycopg2
 from tabulate import tabulate
-from threading import Lock
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-DB_NAME = "Listen"
-DB_USER = "postgres"
-DB_HOST = "127.0.0.1"
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_PORT = os.getenv('DB_PORT')
-
-cur = None
-db = None
-create_event_lock = Lock()
-
-
-def db_connect():
-    exit_code = 0
-    # print(password)
-    try:
-        global db
-        db = psycopg2.connect(database=DB_NAME, user=DB_USER, password=DB_PASSWORD, 
-                              host=DB_HOST, port=DB_PORT)
-        print("Successfully connect to DBMS.")
-        global cur
-        cur = db.cursor()
-        return db
-
-    except psycopg2.Error as err:
-        print("DB error: ", err)
-        exit_code = 1
-    except Exception as err:
-        print("Internal Error: ", err)
-        raise err
-    # finally:
-    #     if db is not None:
-    #         db.close()
-    sys.exit(exit_code)
-
+from global_db import get_global_db
 
 def print_table(cur):
     rows = cur.fetchall()
@@ -50,6 +10,7 @@ def print_table(cur):
 
 # ============================= System function =============================
 def db_register_user(username, pwd, email):
+    db, cur = get_global_db()
     cmd = """
             insert into "USER" (User_name, Password, Email) values (%s, %s, %s)
             RETURNING User_id;
@@ -67,6 +28,7 @@ def db_register_user(username, pwd, email):
 
 
 def fetch_user(userid):
+    db, cur = get_global_db()
     cmd = """
             select * 
             from "USER" u
@@ -94,6 +56,7 @@ def fetch_user(userid):
 
 def username_exist(username):
 
+    db, cur = get_global_db()
     cmd = """
             select count(*) from "USER"
             where User_name = %s;
@@ -106,6 +69,7 @@ def username_exist(username):
 
 
 def userid_exist(userid):
+    db, cur = get_global_db()
     cmd = """
             select count(*) 
             from "USER"
@@ -117,6 +81,7 @@ def userid_exist(userid):
 
 
 def list_playlist(user_id):
+    db, cur = get_global_db()
     query = """
             SELECT *
             FROM Playlist
@@ -129,6 +94,7 @@ def list_playlist(user_id):
 
 def list_song_from_playlist(playlist_name):
     
+    db, cur = get_global_db()
     query = f"""
             SELECT 
                 pl.title as playlist_title,
@@ -154,8 +120,11 @@ def list_song_from_playlist(playlist_name):
 
 def query_song(song_name):
     
+    db, cur = get_global_db()
+    print(db)
+    print(cur)
     query = f"""
-            SELECT s.title, s.language, s.genre, s.likes, a.name
+            SELECT s.title, s.language, s.genre, s.likes, a.artist_name
             FROM song as s
             Join artist as a on s.artist_id = a.artist_id
             WHERE s.title LIKE '%{song_name}%';
@@ -166,6 +135,7 @@ def query_song(song_name):
     return print_table(cur)
 
 def query_album(album_name):
+    db, cur = get_global_db()
     
     query = f"""
             SELECT alb.title, alb.genre, a.name
@@ -180,6 +150,7 @@ def query_album(album_name):
 
 
 def query_artist(artist_name):
+    db, cur = get_global_db()
     
     query = f"""
             SELECT *
@@ -193,6 +164,7 @@ def query_artist(artist_name):
 
 
 def create_playlist(user_id, playlist_title, playlist_description, public_or_not, commit=True):
+    db, cur = get_global_db()
     ## playlist_id 要拿掉
     query = f"""
             INSERT INTO PLAYLIST (listener_id, title, creation_date, description, is_public)
@@ -209,6 +181,7 @@ def create_playlist(user_id, playlist_title, playlist_description, public_or_not
 
 
 def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
+    db, cur = get_global_db()
     ## playlist_id 要拿掉
     query = f"""
             INSERT INTO playlist_contain (playlist_id, song_id)
@@ -231,6 +204,7 @@ def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
 
 
 def delete_song_from_playlist(user_id, playlist_id, song_id):
+    db, cur = get_global_db()
     query =f"""
             DELETE FROM playlist_contain
             WHERE playlist_id = {playlist_id}

@@ -19,6 +19,7 @@ class UserLogIn(Action):
             conn.send("email format incorrect".encode('utf-8'))
             email = self.read_input(conn, "correct email")
 
+        print(email)
         userid, username, pwd, is_admin = fetch_user_by_email(email)
         # print(f'--After fetch')
 

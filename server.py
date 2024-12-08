@@ -1,6 +1,6 @@
 import socket
 from threading import Thread
-from DB_utils_ping import db_connect
+from global_db import db_connect
 from utils import *
 from action import UserLogIn, UserSignUp, ArtistSignUp, ArtistLogIn
 
