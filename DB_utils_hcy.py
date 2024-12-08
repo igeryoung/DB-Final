@@ -141,7 +141,7 @@ def query_album(album_name):
     db, cur = get_global_db()
     
     query = f"""
-            SELECT alb.title, alb.genre, a.name
+            SELECT alb.title, alb.genre, a.artist_name
             FROM album as alb
             Join artist as a on a.artist_id = alb.artist_id
             WHERE alb.title LIKE '%{album_name}%';
@@ -157,7 +157,7 @@ def query_artist(artist_name):
     query = f"""
             SELECT *
             FROM artist as a
-            WHERE a.name LIKE '%{artist_name}%';
+            WHERE a.artist_name LIKE '%{artist_name}%';
             """
     # print(cur.mogrify(query))
     cur.execute(query)
