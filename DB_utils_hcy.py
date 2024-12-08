@@ -78,12 +78,20 @@ def userid_exist(userid):
 
 def list_playlist(user_id):
     db, cur = get_global_db()
-    query = """
-            SELECT *
-            FROM Playlist
-            WHERE Listener_id = %s;
-            """
-    cur.execute(query, [user_id])
+
+    if user_id == 'All':
+        query = """
+                SELECT *
+                FROM Playlist
+                """
+        cur.execute(query, [])
+    else:
+        query = """
+                SELECT *
+                FROM Playlist
+                WHERE Listener_id = %s;
+                """
+        cur.execute(query, [user_id])
 
     return print_table(cur)
 
