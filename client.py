@@ -69,7 +69,7 @@ if __name__ == "__main__":
             
             
             elif recv_msg.find("[INPUT]") != -1:
-                print(recv_msg.replace("[INPUT]", ''), end='')
+                # print(recv_msg.replace("[INPUT]", ''), end='')
 
                 send_msg = input().strip()
                 while len(send_msg) == 0:
@@ -82,7 +82,8 @@ if __name__ == "__main__":
             
 
             else:
-                print(recv_msg, end='')
+                # print(recv_msg, end='')
+                pass
     
     finally:
         print("Connection close.")

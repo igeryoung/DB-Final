@@ -26,7 +26,6 @@ def db_register_user(username, pwd, email):
 
     return userid
 
-
 def fetch_user(userid):
     db, cur = get_global_db()
     cmd = """
@@ -53,7 +52,6 @@ def fetch_user(userid):
 
     return username, pwd, email, isUser, isAdmin
 
-
 def username_exist(username):
 
     db, cur = get_global_db()
@@ -67,7 +65,6 @@ def username_exist(username):
     count = cur.fetchone()[0]
     return count > 0
 
-
 def userid_exist(userid):
     db, cur = get_global_db()
     cmd = """
@@ -79,7 +76,6 @@ def userid_exist(userid):
     count = cur.fetchone()[0]
     return count > 0
 
-
 def list_playlist(user_id):
     db, cur = get_global_db()
     query = """
@@ -90,7 +86,6 @@ def list_playlist(user_id):
     cur.execute(query, [user_id])
 
     return print_table(cur)
-
 
 def list_song_from_playlist(playlist_name):
     
@@ -148,7 +143,6 @@ def query_album(album_name):
 
     return print_table(cur)
 
-
 def query_artist(artist_name):
     db, cur = get_global_db()
     
@@ -161,7 +155,6 @@ def query_artist(artist_name):
     cur.execute(query)
 
     return print_table(cur)
-
 
 def create_playlist(user_id, playlist_title, playlist_description, public_or_not, commit=True):
     db, cur = get_global_db()
@@ -178,7 +171,6 @@ def create_playlist(user_id, playlist_title, playlist_description, public_or_not
     if commit:
         db.commit()
     return playlist_id
-
 
 def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
     db, cur = get_global_db()
@@ -201,7 +193,6 @@ def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
     if commit:
         db.commit()
     return playlist_id
-
 
 def delete_song_from_playlist(user_id, playlist_id, song_id):
     db, cur = get_global_db()

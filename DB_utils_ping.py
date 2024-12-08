@@ -223,3 +223,32 @@ def list_artist_song(artist_id):
     cur.execute(query, [int(artist_id)])
 
     return print_table(cur)
+
+def query_song_id_by_artist_id_and_title(artist_id, title):
+    db, cur = get_global_db()
+    cmd = """
+            SELECT song_id FROM "song"
+            WHERE artist_id = %s AND title = %s;
+          """
+    cur.execute(cmd, [artist_id, title])
+    result = cur.fetchone()
+    if result:
+        return result[0]
+    else:
+        return -1
+
+def delete_song_from_playlist(song_id):
+    db, cur = get_global_db()
+    query =f"""
+            DELETE FROM listen_history
+            WHERE song_id = {song_id};
+
+            DELETE FROM playlist_contain
+            WHERE song_id = {song_id};
+
+            DELETE FROM song
+            WHERE song_id = {song_id};
+            """
+    
+    cur.execute(query)
+    db.commit()
