@@ -9,6 +9,7 @@ from action.user.ListSongFromPlaylist import ListSongFromPlaylist
 from action.user.QueryAlbum import QueryAlbum
 from action.user.QueryArtist import QueryArtist
 from action.user.QuerySong import QuerySong
+from action.user.PlaySong import PlaySong
 
 
 class User(Role):
@@ -24,7 +25,8 @@ class User(Role):
                                 ListSongFromPlaylist("List Song From Playlist"),
                                 QueryAlbum("Query Album"),
                                 QueryArtist("Query Artist"),
-                                QuerySong("Query Song")
+                                QuerySong("Query Song"),
+                                PlaySong("Play certain Song")
                             ]
         
 

@@ -252,3 +252,52 @@ def delete_song_from_playlist(song_id):
     
     cur.execute(query)
     db.commit()
+
+def query_song_id_by_song_title(title):
+    db, cur = get_global_db()
+    cmd = """
+            SELECT song_id FROM song
+            WHERE title = %s;
+          """
+    cur.execute(cmd, [title])
+    result = cur.fetchone()
+    
+    if result:
+        return result[0]
+    else:
+        return -1
+
+def play_song(user_id, song_id):
+    db, cur = get_global_db()
+    
+    print(user_id, song_id)
+    # Step 1: Add 1 record to listen_history
+    add_history_cmd = """
+        INSERT INTO listen_history (listener_id, song_id, listen_time)
+        VALUES (%s, %s, NOW());
+    """
+    cur.execute(add_history_cmd, [int(user_id), int(song_id)])
+    
+    # Step 2: Increment the played_times for the song
+    increment_played_times_cmd = """
+        UPDATE song
+        SET played_times = played_times + 1
+        WHERE song_id = %s;
+    """
+    cur.execute(increment_played_times_cmd, [song_id])
+    
+    db.commit()
+    return
+
+def like_song_by_song_id(song_id):
+    db, cur = get_global_db()
+    
+    increment_likes_cmd = """
+        UPDATE song
+        SET likes = likes + 1
+        WHERE song_id = %s;
+    """
+    cur.execute(increment_likes_cmd, [song_id])
+    
+    db.commit()
+    return f"Song ID {song_id} liked successfully."
