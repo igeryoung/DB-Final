@@ -13,6 +13,6 @@ class DeleteSong(Action):
             return
         
         delete_song_from_playlist(song_id)
-        conn.send(f'''successful delete song : {song_title}'''.encode('utf-8'))
+        conn.send(f'''----------------------------------------\nsuccessful delete song : {song_title}'''.encode('utf-8'))
     
         return 

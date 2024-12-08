@@ -37,6 +37,7 @@ def handle_connection(conn, client_addr):
                 actions = user.get_available_action()
                 conn.send(f'[INPUT]Please select your option:\n{list_option(actions)}---> '.encode('utf-8'))
                 action = get_selection(conn, actions)
+                conn.send(f'\n----------------------------------------\n\n'.encode('utf-8'))
                 
                 ret = action.exec(conn, user)
                 if ret == -1:

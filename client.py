@@ -36,7 +36,7 @@ if __name__ == "__main__":
         while True: # Keep receiving and sending message with server
             
             recv_msg = receive_message(client_socket)
-            print(f'recv_msg: {recv_msg}')
+            # print(f'recv_msg: {recv_msg}')
             # client_socket.recv(10000).decode('utf-8')
             if not recv_msg:
                 print("Connection closed by the server.")
@@ -69,7 +69,7 @@ if __name__ == "__main__":
             
             
             elif recv_msg.find("[INPUT]") != -1:
-                # print(recv_msg.replace("[INPUT]", ''), end='')
+                print(recv_msg.replace("[INPUT]", ''), end='')
 
                 send_msg = input().strip()
                 while len(send_msg) == 0:
@@ -82,8 +82,7 @@ if __name__ == "__main__":
             
 
             else:
-                # print(recv_msg, end='')
-                pass
+                print(recv_msg, end='')
     
     finally:
         print("Connection close.")
