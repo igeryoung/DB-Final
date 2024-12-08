@@ -218,3 +218,44 @@ def delete_song_from_playlist(user_id, playlist_id, song_id):
     
     cur.execute(query)
     db.commit()
+    
+    
+def list_user_history(user_id):
+    db, cur = get_global_db()
+    if(user_id == "All"):
+        query = """
+                SELECT *
+                FROM listen_history
+                ORDER BY listener_id ASC, song_id ASC, listen_time ASC;
+                """
+        cur.execute(query)
+    else:
+        query = """
+                SELECT *
+                FROM listen_history
+                WHERE listener_id = %s
+                ORDER BY listener_id ASC, song_id ASC, listen_time ASC;
+                """
+        cur.execute(query, [user_id])
+
+    return print_table(cur)
+
+
+def list_user_playlist(user_id):
+    db, cur = get_global_db()
+    if(user_id == "All"):
+        print("All")
+        query = """
+                SELECT * FROM public.playlist
+                ORDER BY playlist_id ASC 
+                """
+        cur.execute(query)
+    else:
+        query = """
+                SELECT * FROM public.playlist
+                WHERE listener_id = %s
+                ORDER BY playlist_id ASC 
+                """
+        cur.execute(query, [user_id])
+
+    return print_table(cur)
