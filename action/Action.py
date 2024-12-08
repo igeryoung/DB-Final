@@ -16,6 +16,7 @@ class Action():
         if self.mode == 'onboard':
             ret = conn.send(f'[INPUT]Please enter {show_str}: '.encode('utf-8'))
             recv_msg = conn.recv(100).decode("utf-8")
+            print(f'recv_msg: {recv_msg}')
         else:
             recv_msg = self.test_msg[show_str]
         return recv_msg

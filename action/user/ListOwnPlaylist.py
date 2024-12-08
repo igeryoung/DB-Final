@@ -1,9 +1,9 @@
 from ..Action import Action
 from DB_utils_hcy import list_playlist
 ## Tested
-class ListPlaylist(Action):
+class ListOwnPlaylist(Action):
     def exec(self, conn, user):
-        print("List Playlist")
+        print("List Own Playlist")
         table = list_playlist(user.get_userid())
         self.send_table(conn, table)
     

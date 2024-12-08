@@ -12,25 +12,14 @@ def print_table(cur):
 # ============================= User Account =============================
 def db_register_user(username, pwd, email):
     db, cur = get_global_db()
-    # fetch largest uid
-    cmd = """
-            SELECT MAX(user_id)
-            FROM listener
-            """
-    # print(cur.mogrify(cmd, [username]))
-    cur.execute(cmd, [email])
-    max_uid = int(cur.fetchone()[0])
-    cur_uid = max_uid + 1
-
-    cur_date = date.today()
-
+    
 
     cmd = """
-            insert into "listener" (user_id, user_name, join_date, subscription_type, email, password, country, is_admin) 
-            values (%s, %s, %s, 'F', %s, %s, 'Taiwan', false)
+            insert into "listener" (user_name, join_date, subscription_type, email, password, country, is_admin) 
+            values (%s, CURRENT_DATE, 'F', %s, %s, 'Taiwan', false)
             RETURNING user_id;
             """
-    cur.execute(cmd, [cur_uid, username, cur_date, email, pwd])
+    cur.execute(cmd, [username, email, pwd])
 
     userid = cur.fetchone()[0]
     db.commit()
@@ -87,18 +76,13 @@ def db_register_artist(artistname, pwd, email):
             SELECT MAX(artist_id)
             FROM artist
             """
-    # print(cur.mogrify(cmd, [artistname]))
-    cur.execute(cmd, [])
-    max_uid = int(cur.fetchone()[0])
-    cur_uid = max_uid + 1
-    cur_date = date.today()
-
+    
     cmd = """
-            insert into "artist" (artist_id, artist_name, debut_date, email, password, bio) 
-            values (%s, %s, %s, %s, %s, %s)
+            insert into "artist" (artist_name, debut_date, email, password, bio) 
+            values (%s, CURRENT_DATE, %s, %s, %s)
             RETURNING artist_id;
             """
-    cur.execute(cmd, [cur_uid, artistname, cur_date, email, pwd, ''])
+    cur.execute(cmd, [artistname, email, pwd, ''])
 
     artist_id = cur.fetchone()[0]
     db.commit()

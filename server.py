@@ -21,7 +21,7 @@ def handle_connection(conn, client_addr):
             conn.send(f'[INPUT]Please select your option:\n{list_option(welcome_action)}---> '.encode('utf-8'))
                 
             action = get_selection(conn, welcome_action)
-            
+            print("action", action)
             user = action.exec(conn)
             # print(user)
             if user == -1:
@@ -37,6 +37,7 @@ def handle_connection(conn, client_addr):
                 actions = user.get_available_action()
                 conn.send(f'[INPUT]Please select your option:\n{list_option(actions)}---> '.encode('utf-8'))
                 action = get_selection(conn, actions)
+                
                 ret = action.exec(conn, user)
                 if ret == -1:
                     break
@@ -53,7 +54,8 @@ if __name__ == '__main__':
 
     db = db_connect()
     cur = db.cursor()
-
+    print("db", db)
+    print("cur", cur)
     bind_ip = "127.0.0.1"
     bind_port = 8800
 

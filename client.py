@@ -36,7 +36,7 @@ if __name__ == "__main__":
         while True: # Keep receiving and sending message with server
             
             recv_msg = receive_message(client_socket)
-            # print(f'recv_msg: {recv_msg}')
+            print(f'recv_msg: {recv_msg}')
             # client_socket.recv(10000).decode('utf-8')
             if not recv_msg:
                 print("Connection closed by the server.")
