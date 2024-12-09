@@ -15,8 +15,7 @@ class AddAlbum(Action):
 
         status = db_register_album(user.userid, album_name, album_genre)
         if status:
-            conn.send(f'''----------------------------------------\n
-                    Successfully create album! album_name = {album_name}\n'''.encode('utf-8'))
+            conn.send(f'''\n----------------------------------------\n\nSuccessfully create album! album_name = {album_name}\n'''.encode('utf-8'))
             return
         else:
             return -1

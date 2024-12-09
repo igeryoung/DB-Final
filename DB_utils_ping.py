@@ -209,7 +209,47 @@ def query_song_in_album(artist_id, album_title):
 
     else:
         return -1
+
+def delete_album(album_id, recur):
+    db, cur = get_global_db()
     
+    if recur == "N":
+        update_query = """
+            UPDATE song
+            SET album_id = 1
+            WHERE album_id = %s;
+        """
+        cur.execute(update_query, [album_id])  # Use %s and provide the parameter as a list
+
+        print("Update complete")
+
+        # Delete the album
+        delete_query = """
+            DELETE FROM album
+            WHERE album_id = %s;
+        """
+        cur.execute(delete_query, [album_id])  # Use %s and provide the parameter as a list
+
+        # Commit the transaction
+        db.commit()
+    else:
+        query =f"""
+                DELETE FROM song
+                WHERE album_id = {album_id};
+                """
+        cur.execute(query)
+
+        print("clear song")
+
+        query =f"""
+                DELETE FROM album
+                WHERE album_id = {album_id};
+                """
+        
+        cur.execute(query)
+        db.commit()
+    return
+
 # ============================= Song Operation =============================
 
 def db_register_song(artist_id, title, genre, language, duration=60, album=None):
