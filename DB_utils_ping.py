@@ -188,6 +188,28 @@ def query_album_id_by_title_and_artist(artist_id, title):
     else:
         return -1
 
+def query_song_in_album(artist_id, album_title):
+    db, cur = get_global_db()
+    cmd = """
+            SELECT album_id FROM "album"
+            WHERE artist_id = %s AND title = %s;
+          """
+    cur.execute(cmd, [artist_id, album_title])
+    result = cur.fetchone()
+    
+    if result:
+        album_id = result[0]
+        # print('id: ', album_id)
+        cmd = """
+            SELECT song_id, title FROM "song"
+            WHERE album_id = %s
+          """
+        cur.execute(cmd, [int(album_id)])
+        return print_table(cur)
+
+    else:
+        return -1
+    
 # ============================= Song Operation =============================
 
 def db_register_song(artist_id, title, genre, language, duration=60, album=None):

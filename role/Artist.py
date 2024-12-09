@@ -1,5 +1,5 @@
 from .Role import Role
-from action.artist import AddAlbum, ListAlbum, AddSong, ListSong, DeleteSong
+from action.artist import AddAlbum, ListAlbum, AddSong, ListSong, DeleteSong, ListSongInAlbum
 # from action.Exit import Exit
 # from action.Logout import Logout
 # from action.event.CreateEvent import CreateEvent
@@ -21,7 +21,8 @@ class Artist(Role):
                                 AddSong("Upload a new song"),
                                 ListAlbum("List all of my albums"),
                                 ListSong("List all of my song"),
-                                DeleteSong("Delete my song")
+                                DeleteSong("Delete my song"),
+                                ListSongInAlbum("List song in one Album")
                                 # CreateEvent("Create Study Event"),
                                 # ListEvent("List All Available Study Events"),
                                 # JoinEvent("Join Study Event"),

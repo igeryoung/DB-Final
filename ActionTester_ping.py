@@ -2,7 +2,7 @@ import socket
 from threading import Thread
 from global_db import db_connect
 from utils import *
-from action.user.PlaySong import PlaySong
+from action.artist.ArtistListSongInAlbum import ListSongInAlbum
 
 
 if __name__ == '__main__':
@@ -13,9 +13,9 @@ if __name__ == '__main__':
     bind_ip = "127.0.0.1"
     bind_port = 8800
 
-    test_action = PlaySong('', 'test')
+    test_action = ListSongInAlbum('', 'test')
     data = {
-        "Song name": 'Love Story',
+        "Album title": 'ynoo',
         "(Y/N)" : 'N'
     }
     test_action.set_test_input(data)
