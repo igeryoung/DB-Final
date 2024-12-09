@@ -127,6 +127,21 @@ def artist_email_exist(email):
     count = cur.fetchone()[0]
     return count > 0
 
+def query_artist_id_by_name(name):
+    db, cur = get_global_db()
+    query = """
+        SELECT artist_id FROM artist
+        WHERE artist_name = %s;
+    """
+    
+    cur.execute(query, [name])
+    result = cur.fetchone()
+    
+    if result:
+        return result[0]
+    else:
+        return -1 
+
 # ============================= Album Operation =============================
 
 def artist_album_exist(artist_id, album):
@@ -409,3 +424,37 @@ def query_cash(user_id):
     cur.execute(deposit_query, [int(user_id)])
     result = cur.fetchone()
     return result[0]
+
+def donate_cash(user_id, artist_id, value):
+    db, cur = get_global_db()
+
+    try:
+        deduct_user_cash_query = """
+            UPDATE listener
+            SET cash = cash - %s
+            WHERE user_id = %s;
+        """
+        cur.execute(deduct_user_cash_query, [value, user_id])
+
+        # Insert donation record
+        insert_donation_query = """
+            INSERT INTO donation (listener_id, artist_id, amount)
+            VALUES (%s, %s, %s);
+        """
+        cur.execute(insert_donation_query, [user_id, artist_id, value])
+
+        # Add cash to artist
+        update_artist_cash_query = """
+            UPDATE artist
+            SET cash = cash + %s
+            WHERE artist_id = %s;
+        """
+        cur.execute(update_artist_cash_query, [value, artist_id])
+
+        # Commit transaction
+        db.commit()
+        return
+
+    except Exception as e:
+        db.rollback()
+        return f"An error occurred: {e}"

@@ -14,6 +14,7 @@ from action.user.QuerySongInAlbum import QuerySongInAlbum
 from action.user.PlaySong import PlaySong
 from action.user.Deposit import Deposit
 from action.user.QueryCash import QueryCash
+from action.user.Donate import Donate
 
 
 class User(Role):
@@ -34,5 +35,6 @@ class User(Role):
             PlaySong("Play certain Song"),
             QueryCash("Query Cash"),
             Deposit("Deposit Cash"),
+            Donate("Donate to Artist")
             
         ]
