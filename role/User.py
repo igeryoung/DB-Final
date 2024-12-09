@@ -10,6 +10,7 @@ from action.user.ListSongFromPlaylist import ListSongFromPlaylist
 from action.user.QueryAlbum import QueryAlbum
 from action.user.QueryArtist import QueryArtist
 from action.user.QuerySong import QuerySong
+from action.user.QuerySongInAlbum import QuerySongInAlbum
 from action.user.PlaySong import PlaySong
 
 
@@ -21,6 +22,7 @@ class User(Role):
             QueryAlbum("Query Album"),
             QueryArtist("Query Artist"),
             QuerySong("Query Song"),
+            QuerySongInAlbum("Query Song in Album"),
             ListOwnPlaylist("List Your Playlists"),
             ListOtherPlaylist("List Other's Playlists"),
             CreatePlaylist("Create Playlist"),
