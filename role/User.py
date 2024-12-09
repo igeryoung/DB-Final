@@ -12,6 +12,8 @@ from action.user.QueryArtist import QueryArtist
 from action.user.QuerySong import QuerySong
 from action.user.QuerySongInAlbum import QuerySongInAlbum
 from action.user.PlaySong import PlaySong
+from action.user.Deposit import Deposit
+from action.user.QueryCash import QueryCash
 
 
 class User(Role):
@@ -30,4 +32,7 @@ class User(Role):
             DeleteSongFromPlaylist("Delete Song From Playlist"),
             ListSongFromPlaylist("List Song From Playlist"),
             PlaySong("Play certain Song"),
+            QueryCash("Query Cash"),
+            Deposit("Deposit Cash"),
+            
         ]

@@ -2,7 +2,7 @@ import socket
 from threading import Thread
 from global_db import db_connect
 from utils import *
-from action.artist.ArtistListSongInAlbum import ListSongInAlbum
+from action.user.QueryCash import QueryCash
 
 
 if __name__ == '__main__':
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     bind_ip = "127.0.0.1"
     bind_port = 8800
 
-    test_action = ListSongInAlbum('', 'test')
+    test_action = QueryCash('', 'test')
     data = {
         "Album title": 'ynoo',
         "(Y/N)" : 'N'

@@ -386,3 +386,26 @@ def like_song_by_song_id(song_id):
     
     db.commit()
     return f"Song ID {song_id} liked successfully."
+
+# ============================= Cash Operation =============================
+
+def deposit_cash(user_id, value):
+    db, cur = get_global_db()
+    deposit_query = """
+        UPDATE listener
+        SET cash = cash + %s
+        WHERE user_id = %s;
+    """
+    cur.execute(deposit_query, [int(value), user_id])
+    db.commit()
+
+def query_cash(user_id):
+    db, cur = get_global_db()
+    deposit_query = """
+        SELECT cash
+        From listener
+        WHERE user_id = %s;
+    """
+    cur.execute(deposit_query, [int(user_id)])
+    result = cur.fetchone()
+    return result[0]
