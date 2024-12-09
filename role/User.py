@@ -1,4 +1,5 @@
 from .Role import Role
+
 # from action.Exit import Exit
 from action.user.AddSongToPlaylist import AddSongToPlaylist
 from action.user.CreatePlaylist import CreatePlaylist
@@ -16,17 +17,15 @@ class User(Role):
     def __init__(self, userid, username, pwd, email):
         super().__init__(userid, username, pwd, email)
 
-        self.user_action =  [
-                                ListOwnPlaylist("List Your Playlists"),
-                                ListOtherPlaylist("List Other's Playlists"),
-                                CreatePlaylist("Create Playlist"),
-                                AddSongToPlaylist("Add Song To Playlist"),
-                                DeleteSongFromPlaylist("Delete Song From Playlist"),
-                                ListSongFromPlaylist("List Song From Playlist"),
-                                QueryAlbum("Query Album"),
-                                QueryArtist("Query Artist"),
-                                QuerySong("Query Song"),
-                                PlaySong("Play certain Song")
-                            ]
-        
-
+        self.user_action = [
+            QueryAlbum("Query Album"),
+            QueryArtist("Query Artist"),
+            QuerySong("Query Song"),
+            ListOwnPlaylist("List Your Playlists"),
+            ListOtherPlaylist("List Other's Playlists"),
+            CreatePlaylist("Create Playlist"),
+            AddSongToPlaylist("Add Song To Playlist"),
+            DeleteSongFromPlaylist("Delete Song From Playlist"),
+            ListSongFromPlaylist("List Song From Playlist"),
+            PlaySong("Play certain Song"),
+        ]

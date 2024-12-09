@@ -9,7 +9,7 @@ class AddSongToPlaylist(Action):
         song_id = self.read_input(conn, "Song id")
         print(f'Adding')
         
-        table = add_song_to_playlist(user_id, playlist_id, song_id)
-        self.send_table(conn, table)
+        _ = add_song_to_playlist(user_id, playlist_id, song_id)
+        conn.send(f'''----------------------------------------\nSuccessfully added song to playlist!'''.encode('utf-8'))
     
         return 

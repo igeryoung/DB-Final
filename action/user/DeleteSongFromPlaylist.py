@@ -9,7 +9,7 @@ class DeleteSongFromPlaylist(Action):
         song_id = self.read_input(conn, "Song id")
         print(f'Deleting')
         
-        table = delete_song_from_playlist(user_id, playlist_id, song_id)
-        self.send_table(conn, table)
+        _ = delete_song_from_playlist(user_id, playlist_id, song_id)
+        conn.send(f'''----------------------------------------\nSuccessfully deleted song from playlist!'''.encode('utf-8'))
     
         return 

@@ -102,7 +102,7 @@ def list_song_from_playlist(playlist_name):
             SELECT 
                 pl.title as playlist_title,
                 s.title as song_title, 
-                a.name as artist_name,
+                a.artist_name as artist_name,
                 s.language, 
                 s.genre
             FROM 
@@ -114,7 +114,9 @@ def list_song_from_playlist(playlist_name):
             JOIN 
                 Artist AS a ON s.artist_id = a.artist_id
             WHERE 
-                pl.title LIKE '%{playlist_name}%';
+                pl.title LIKE '%{playlist_name}%'
+            AND 
+	            pl.is_public = 'Y';
             """
     # print(cur.mogrify(query))
     cur.execute(query)
@@ -127,7 +129,7 @@ def query_song(song_name):
     print(db)
     print(cur)
     query = f"""
-            SELECT s.title, s.language, s.genre, s.likes, a.artist_name
+            SELECT s.song_id, s.title, s.language, s.genre, s.likes, a.artist_name
             FROM song as s
             Join artist as a on s.artist_id = a.artist_id
             WHERE s.title LIKE '%{song_name}%';
@@ -182,7 +184,7 @@ def create_playlist(user_id, playlist_title, playlist_description, public_or_not
 
 def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
     db, cur = get_global_db()
-    ## playlist_id 要拿掉
+    
     query = f"""
             INSERT INTO playlist_contain (playlist_id, song_id)
             SELECT {playlist_id}, {song_id}
@@ -197,12 +199,13 @@ def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
     # print(cur.mogrify(query))
     cur.execute(query)
     print(f'After exec')
-    playlist_id = cur.fetchone()[0]
+    return_playlist_id = cur.fetchone()[0]
+    
     if commit:
         db.commit()
-    return playlist_id
+    return return_playlist_id
 
-def delete_song_from_playlist(user_id, playlist_id, song_id):
+def delete_song_from_playlist(user_id, playlist_id, song_id, commit=True):
     db, cur = get_global_db()
     query =f"""
             DELETE FROM playlist_contain
@@ -217,7 +220,9 @@ def delete_song_from_playlist(user_id, playlist_id, song_id):
             """
     
     cur.execute(query)
-    db.commit()
+    if commit:
+        db.commit()
+    return
     
     
 def list_user_history(user_id):
