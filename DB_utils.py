@@ -768,13 +768,13 @@ def list_user_history(user_id):
                 """
         cur.execute(query)
     else:
-        query = """
+        query = f"""
                 SELECT *
                 FROM listen_history
-                WHERE listener_id = %s
+                WHERE listener_id = {user_id}
                 ORDER BY listener_id ASC, song_id ASC, listen_time ASC;
                 """
-        cur.execute(query, [user_id])
+        cur.execute(query)
 
     return print_table(cur)
 
@@ -837,7 +837,6 @@ def artist_query_activity(user_id):
     cur.execute(query)
     return print_table(cur)
 
-# Query activity ID by artist ID and title
 def query_activity_id_by_artist_id_and_title(artist_id, title):
     db, cur = get_global_db()
     query = """
@@ -848,7 +847,6 @@ def query_activity_id_by_artist_id_and_title(artist_id, title):
     result = cur.fetchone()
     return result[0] if result else -1
 
-# Delete activity by ID
 def delete_activity_by_id(activity_id):
     db, cur = get_global_db()
     try:
@@ -873,3 +871,165 @@ def user_query_activity(recent_date):
         """
     cur.execute(query, [recent_date])
     return print_table(cur)
+
+# ============================= Admin Operation =============================
+
+def list_listener(uid):
+    db, cur = get_global_db()
+    if uid == "All":
+        # Query to fetch all listener information
+        query = """
+            SELECT *
+            FROM listener
+            ORDER BY user_id ASC
+            FOR SHARE NOWAIT;
+        """
+        cur.execute(query)
+    else:
+        # Query to fetch all listener information
+        query = f"""
+            SELECT *
+            FROM listener
+            WHERE user_id = '{int(uid)}'
+            ORDER BY user_id ASC;
+        """
+        cur.execute(query)
+    return print_table(cur)
+
+def list_artist(uid):
+    db, cur = get_global_db()
+    print(uid)
+    if uid == "All":
+        query = """
+            SELECT *
+            FROM artist
+            ORDER BY artist_id ASC
+            FOR SHARE NOWAIT;
+        """
+        cur.execute(query)
+    else:
+        # Query to fetch all artist information
+        query = f"""
+            SELECT *
+            FROM artist
+            WHERE artist_id = '{int(uid)}'
+            ORDER BY artist_id ASC;
+        """
+        cur.execute(query)
+    return print_table(cur)
+
+def check_listener_exists(user_id):
+        """Check if the listener exists in the database."""
+        db, cur = get_global_db()
+        query = """
+            SELECT 1
+            FROM listener
+            WHERE user_id = %s;
+        """
+        cur.execute(query, [user_id])
+        result = cur.fetchone()
+        return result is not None
+
+def delete_listener_by_id(user_id):
+    """Delete listener from the database."""
+    db, cur = get_global_db()
+    query = """
+        DELETE FROM listener
+        WHERE user_id = %s;
+    """
+    cur.execute(query, [user_id])
+    db.commit()
+
+    # Optionally, handle cascading deletions if necessary (e.g., playlists, follow relations, etc.)
+    # Delete associated playlists
+    delete_playlists_query = """
+        DELETE FROM playlist
+        WHERE listener_id = %s;
+    """
+    cur.execute(delete_playlists_query, [user_id])
+
+    # Delete associated follow relationships
+    delete_follow_query = """
+        DELETE FROM follow
+        WHERE listener_id = %s;
+    """
+    cur.execute(delete_follow_query, [user_id])
+
+    db.commit()
+
+def check_artist_exists(user_id):
+    """Check if the artist exists in the database."""
+    db, cur = get_global_db()
+    query = """
+        SELECT 1
+        FROM artist
+        WHERE artist_id = %s;
+    """
+    cur.execute(query, [user_id])
+    result = cur.fetchone()
+    return result is not None
+
+def delete_artist_by_id(user_id):
+    """Delete artist and associated data from the database."""
+    db, cur = get_global_db()
+    
+    # Delete songs by the artist
+    delete_songs_query = """
+        DELETE FROM song
+        WHERE artist_id = %s;
+    """
+    cur.execute(delete_songs_query, [user_id])
+    
+    # Delete albums by the artist
+    delete_albums_query = """
+        DELETE FROM album
+        WHERE artist_id = %s;
+    """
+    cur.execute(delete_albums_query, [user_id])
+    
+    # Delete artist activities
+    delete_activities_query = """
+        DELETE FROM artist_activity
+        WHERE artist_id = %s;
+    """
+    cur.execute(delete_activities_query, [user_id])
+    
+    # Delete follow relationships for the artist
+    delete_follows_query = """
+        DELETE FROM follow
+        WHERE artist_id = %s;
+    """
+    cur.execute(delete_follows_query, [user_id])
+    
+    # Finally, delete the artist from the artist table
+    delete_artist_query = """
+        DELETE FROM artist
+        WHERE artist_id = %s;
+    """
+    cur.execute(delete_artist_query, [user_id])
+    
+    # Commit all changes
+    db.commit()
+
+def list_user_donation(uid):
+    db, cur = get_global_db()
+    print(uid)
+    if uid == "All":
+        query = """
+            SELECT *
+            FROM donation
+            ORDER BY donation_time ASC
+            FOR SHARE NOWAIT;
+        """
+        cur.execute(query)
+    else:
+        # Query to fetch all donation information
+        query = f"""
+            SELECT *
+            FROM donation
+            WHERE listener_id = '{int(uid)}'
+            ORDER BY donation_time ASC;
+        """
+        cur.execute(query)
+    return print_table(cur)
+

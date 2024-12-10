@@ -1,5 +1,6 @@
 from ..Action import Action
 from role.User import User
+from role.Admin import Admin
 # from role.Admin import Admin
 from DB_utils import fetch_user_by_email
 import re
@@ -42,4 +43,7 @@ class UserLogIn(Action):
         
         else:
             print(f'welcome! {username}')
-            return User(userid, username, pwd, email)
+            if is_admin:
+                return Admin(userid, username, pwd, email)
+            else:
+                return User(userid, username, pwd, email)
