@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import artist_activity_exist, db_register_activity
+from DB_utils import artist_activity_exist, db_register_activity
 from datetime import datetime
 
 class AddActivity(Action):

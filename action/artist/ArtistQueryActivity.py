@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import artist_query_activity
+from DB_utils import artist_query_activity
 ## Tested 
 class QueryActivity(Action):
     def exec(self, conn, user):

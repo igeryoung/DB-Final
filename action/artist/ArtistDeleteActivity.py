@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import delete_activity_by_id, query_activity_id_by_artist_id_and_title
+from DB_utils import delete_activity_by_id, query_activity_id_by_artist_id_and_title
 
 class DeleteActivity(Action):
     def exec(self, conn, user):
