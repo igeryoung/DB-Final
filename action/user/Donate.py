@@ -22,7 +22,7 @@ class Donate(Action):
         elif cur_value < int(dot_value):
             conn.send(f'''No sufficent found, you only have {cur_value}\n'''.encode('utf-8'))
         else:
-            conn.send(f'''Ready donate $ [{cur_value}] to [{name}] \n'''.encode('utf-8'))
+            conn.send(f'''Ready donate $ [{dot_value}] to [{name}] \n'''.encode('utf-8'))
             confirm = self.read_input(conn, "Confirm? (Y/N) ")
             if confirm == "Y" or confirm == "y":
                 donate_cash(uid, artist_id, int(dot_value))
