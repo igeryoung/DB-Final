@@ -469,3 +469,104 @@ def artist_query_cash(user_id):
     cur.execute(deposit_query, [int(user_id)])
     result = cur.fetchone()
     return result[0]
+
+# ============================= Follow Operation =============================
+
+def follow_artist(user_id, artist_id, name):
+    db, cur = get_global_db()
+
+    try:
+        # Check if the user already follows the artist
+        check_follow_query = """
+            SELECT 1 FROM follow
+            WHERE listener_id = %s AND artist_id = %s;
+        """
+        cur.execute(check_follow_query, [user_id, artist_id])
+        result = cur.fetchone()
+
+        if result:
+            return "You are already following this artist."
+
+        # Insert follow record
+        insert_follow_query = """
+            INSERT INTO follow (listener_id, artist_id)
+            VALUES (%s, %s);
+        """
+        cur.execute(insert_follow_query, [user_id, artist_id])
+
+        # Update artist's follow_num
+        update_artist_follow_query = """
+            UPDATE artist
+            SET follow_num = follow_num + 1
+            WHERE artist_id = %s;
+        """
+        cur.execute(update_artist_follow_query, [artist_id])
+
+        # Commit the transaction
+        db.commit()
+        return f"You are now following Artist [{name}]."
+
+    except Exception as e:
+        db.rollback()
+        return f"An error occurred: {e}"
+
+def unfollow_artist(user_id, artist_id, name):
+    db, cur = get_global_db()
+
+    try:
+        # Check if the follow record exists
+        check_follow_query = """
+            SELECT 1 FROM follow
+            WHERE listener_id = %s AND artist_id = %s;
+        """
+        cur.execute(check_follow_query, [user_id, artist_id])
+        result = cur.fetchone()
+
+        if not result:
+            return "You are not following this artist."
+
+        # Delete the follow record
+        delete_follow_query = """
+            DELETE FROM follow
+            WHERE listener_id = %s AND artist_id = %s;
+        """
+        cur.execute(delete_follow_query, [user_id, artist_id])
+
+        # Update artist's follow_num
+        update_artist_follow_query = """
+            UPDATE artist
+            SET follow_num = follow_num - 1
+            WHERE artist_id = %s AND follow_num > 0;
+        """
+        cur.execute(update_artist_follow_query, [artist_id])
+
+        # Commit the transaction
+        db.commit()
+        return f"You are now unfollowed Artist [{name}]."
+
+    except Exception as e:
+        db.rollback()
+        return f"An error occurred: {e}"
+
+def list_all_follow_artist(user_id):
+    db, cur = get_global_db()
+
+    try:
+        # Query to get all followed artists with required details
+        query = """
+            SELECT 
+                a.artist_name, 
+                a.total_played, 
+                a.follow_num, 
+                a.bio
+            FROM follow f
+            JOIN artist a ON f.artist_id = a.artist_id
+            WHERE f.listener_id = %s
+            ORDER BY a.artist_name;
+        """
+        
+        cur.execute(query, [user_id])
+        return print_table(cur)
+    
+    except Exception as e:
+        return f"An error occurred: {e}"

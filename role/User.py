@@ -15,6 +15,9 @@ from action.user.PlaySong import PlaySong
 from action.user.Deposit import Deposit
 from action.user.QueryCash import QueryCash
 from action.user.Donate import Donate
+from action.user.FollowArtist import FollowArtist
+from action.user.CancelFollowArtist import CancelFollowArtist
+from action.user.QueryFollow import QueryFollow
 
 
 class User(Role):
@@ -35,6 +38,10 @@ class User(Role):
             PlaySong("Play certain Song"),
             QueryCash("Query Cash"),
             Deposit("Deposit Cash"),
-            Donate("Donate to Artist")
+            Donate("Donate to Artist"),
+            FollowArtist("Follow Artist"),
+            CancelFollowArtist("Cancel Follow Artist"),
+            QueryFollow("List all my following Artist"),
+
             
         ]
