@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_hcy import query_album
+from DB_utils import query_album
 ## Tested 
 class QueryAlbum(Action):
     def exec(self, conn, user):
