@@ -285,6 +285,31 @@ def delete_album(album_id, recur):
         db.commit()
     return
 
+def user_query_song_in_album(album_title):
+    db, cur = get_global_db()
+
+    cmd = f"""
+            SELECT album_id FROM "album"
+            WHERE title = '{album_title}';
+        """
+    cur.execute(cmd)
+    result = cur.fetchone()
+
+    print(result)
+    
+    if result:
+        album_id = result[0]
+        # print('id: ', album_id)
+        cmd = """
+            SELECT song_id, title FROM "song"
+            WHERE album_id = %s
+        """
+        cur.execute(cmd, [int(album_id)])
+        return print_table(cur)
+
+    else:
+        return -1
+
 # ============================= Song Operation =============================
 
 def db_register_song(artist_id, title, genre, language, duration=60, album=None):
@@ -836,3 +861,15 @@ def delete_activity_by_id(activity_id):
     except Exception as e:
         print(f"Database error: {e}")
         db.rollback()
+
+def user_query_activity(recent_date):
+    db, cur = get_global_db()
+
+    query = """
+            SELECT title, description, location, event_date, created_at
+            FROM artist_activity
+            WHERE event_date <= %s
+            ORDER BY event_date ASC;
+        """
+    cur.execute(query, [recent_date])
+    return print_table(cur)

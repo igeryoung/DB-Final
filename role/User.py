@@ -18,6 +18,8 @@ from action.user.Donate import Donate
 from action.user.FollowArtist import FollowArtist
 from action.user.CancelFollowArtist import CancelFollowArtist
 from action.user.QueryFollow import QueryFollow
+from action.user.QueryActivity import QueryRecentActivity
+
 
 
 class User(Role):
@@ -36,12 +38,11 @@ class User(Role):
             DeleteSongFromPlaylist("Delete Song From Playlist"),
             ListSongFromPlaylist("List Song From Playlist"),
             PlaySong("Play certain Song"),
-            QueryCash("Query Cash"),
+            QueryCash("Show my current Cash"),
             Deposit("Deposit Cash"),
             Donate("Donate to Artist"),
             FollowArtist("Follow Artist"),
             CancelFollowArtist("Cancel Follow Artist"),
             QueryFollow("List all my following Artist"),
-
-            
+            QueryRecentActivity("Show recent Activity"),
         ]
