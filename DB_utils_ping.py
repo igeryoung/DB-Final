@@ -29,17 +29,16 @@ def db_register_user(username, pwd, email):
 def fetch_user_by_email(email):
     db, cur = get_global_db()
 
-    cmd = """
+    cmd = f"""
             SELECT user_id, user_name, password, is_admin
             FROM listener
-            WHERE email = %s;
+            WHERE email = '{email}';
             """
     # print(cur.mogrify(cmd, [username]))
-    cur.execute(cmd, [email])
-    data = cur.fetchall()[0]
+    cur.execute(cmd)
+    data = cur.fetchone()
 
-    userid, username, pwd, is_admin = data
-    return userid, username, pwd, is_admin
+    return data
 
 def user_name_exist(username):
     db, cur = get_global_db()
@@ -91,17 +90,15 @@ def db_register_artist(artistname, pwd, email):
 
 def fetch_artist_by_email(email):
     db, cur = get_global_db()
-    cmd = """
+    cmd = f"""
             SELECT artist_id, artist_name, password
             FROM artist
-            WHERE email = %s;
+            WHERE email = '{email}';
             """
     # print(cur.mogrify(cmd, [artistname]))
-    cur.execute(cmd, [email])
-    data = cur.fetchall()[0]
-
-    artistid, artistname, pwd, = data
-    return artistid, artistname, pwd
+    cur.execute(cmd)
+    data = cur.fetchone()
+    return data
 
 def artist_name_exist(artistname):
     db, cur = get_global_db()
@@ -570,3 +567,14 @@ def list_all_follow_artist(user_id):
     
     except Exception as e:
         return f"An error occurred: {e}"
+    
+def artist_query_follow_num(user_id):
+    db, cur = get_global_db()
+    deposit_query = """
+        SELECT follow_num
+        From artist
+        WHERE artist_id = %s;
+    """
+    cur.execute(deposit_query, [int(user_id)])
+    result = cur.fetchone()
+    return result[0]

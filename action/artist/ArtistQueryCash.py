@@ -4,6 +4,6 @@ from DB_utils_ping import artist_query_cash
 class QueryCash(Action):
     def exec(self, conn, user):
         value = artist_query_cash(user.get_userid())
-        conn.send(f'''your current cash : {value}\n'''.encode('utf-8'))
+        conn.send(f'''Your current cash : {value}\n'''.encode('utf-8'))
 
         return 

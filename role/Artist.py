@@ -1,15 +1,8 @@
 from .Role import Role
-from action.artist import AddAlbum, ListAlbum, AddSong, ListSong, DeleteSong, ListSongInAlbum, DeleteAlbum, QueryCash
-# from action.Exit import Exit
-# from action.Logout import Logout
-# from action.event.CreateEvent import CreateEvent
-# from action.event.ListEvent import ListEvent
-# from action.event.JoinEvent import JoinEvent
-# from action.event.LeaveEvent import LeaveEvent
-# from action.ListHistory import ListHistory
-# from action.FindCourse import FindCourse
-# from action.FindReserved import FindReserved
-# from action.ModifyUserInfo import ModifyUserInfo
+from action.artist import (AddAlbum, ListAlbum, AddSong, 
+                           ListSong, DeleteSong, ListSongInAlbum, 
+                           DeleteAlbum, QueryCash, ArtistQueryFollow_num)
+
 
 
 class Artist(Role):
@@ -24,17 +17,9 @@ class Artist(Role):
                                 ListSongInAlbum("List Song in one Album"),
                                 DeleteSong("Delete my Song"),
                                 DeleteAlbum("Delete my Album"),
-                                QueryCash("Query Cash")
-                                # CreateEvent("Create Study Event"),
-                                # ListEvent("List All Available Study Events"),
-                                # JoinEvent("Join Study Event"),
-                                # LeaveEvent("Leave Study Event"),
-                                # ListHistory("List Study Group History"),
-                                # FindCourse("Find Course"),
-                                # FindReserved("Find Reserved Classroom"),
-                                # ModifyUserInfo("Modify User Information"),
-                                # Logout("Logout"),
-                                # Exit("Leave System")
+                                QueryCash("Query Cash"),
+                                ArtistQueryFollow_num("Query Follow Number")
+
                             ]
     def get_info_msg(self):
         return f'Artist_id: {self.userid}, Artist_name: {self.username}, email: {self.email}, role: {type(self).__name__}'

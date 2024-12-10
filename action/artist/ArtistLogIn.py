@@ -19,13 +19,15 @@ class ArtistLogIn(Action):
             conn.send("email format incorrect".encode('utf-8'))
             email = self.read_input(conn, "correct email")
 
-        artistid, artistname, pwd = fetch_artist_by_email(email)
+        data = fetch_artist_by_email(email)
         # print(f'--After fetch')
 
-        while artistname is None:
+        while data is None:
             conn.send("artistid not exist, ".encode('utf-8'))
             artistid = self.read_input(conn, "correct artistid")
-            artistid, artistname, pwd, is_admin = fetch_artist_by_email(artistid)
+            data = fetch_artist_by_email(artistid)
+
+        artistid, artistname, pwd = data
 
         pwd_input = self.read_input(conn, "password")
         

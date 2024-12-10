@@ -20,13 +20,15 @@ class UserLogIn(Action):
             email = self.read_input(conn, "correct email")
 
         print(email)
-        userid, username, pwd, is_admin = fetch_user_by_email(email)
+        data = fetch_user_by_email(email)
         # print(f'--After fetch')
 
-        while username is None:
+        while data is None:
             conn.send("Userid not exist, ".encode('utf-8'))
-            userid = self.read_input(conn, "correct userid")
-            userid, username, pwd, is_admin = fetch_user_by_email(userid)
+            email = self.read_input(conn, "correct email")
+            data = fetch_user_by_email(userid)
+
+        userid, username, pwd, is_admin = data
 
         pwd_input = self.read_input(conn, "password")
         

@@ -9,7 +9,7 @@ class ListSongInAlbum(Action):
         res = query_song_in_album(uid, album_title)
         
         if res == -1:
-            conn.send(f'''you have no album name {album_title}'''.encode('utf-8'))
+            conn.send(f'''You have no album name {album_title}'''.encode('utf-8'))
 
         self.send_table(conn, res)
         return
