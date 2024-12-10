@@ -458,3 +458,14 @@ def donate_cash(user_id, artist_id, value):
     except Exception as e:
         db.rollback()
         return f"An error occurred: {e}"
+    
+def artist_query_cash(user_id):
+    db, cur = get_global_db()
+    deposit_query = """
+        SELECT cash
+        From artist
+        WHERE artist_id = %s;
+    """
+    cur.execute(deposit_query, [int(user_id)])
+    result = cur.fetchone()
+    return result[0]

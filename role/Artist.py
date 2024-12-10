@@ -1,5 +1,5 @@
 from .Role import Role
-from action.artist import AddAlbum, ListAlbum, AddSong, ListSong, DeleteSong, ListSongInAlbum, DeleteAlbum
+from action.artist import AddAlbum, ListAlbum, AddSong, ListSong, DeleteSong, ListSongInAlbum, DeleteAlbum, QueryCash
 # from action.Exit import Exit
 # from action.Logout import Logout
 # from action.event.CreateEvent import CreateEvent
@@ -17,13 +17,14 @@ class Artist(Role):
         super().__init__(userid, username, pwd, email)
 
         self.user_action =  [
-                                AddAlbum("Upload a new album"),
-                                AddSong("Upload a new song"),
-                                ListSong("List all of my song"),
-                                ListAlbum("List all of my albums"),
-                                ListSongInAlbum("List song in one album"),
-                                DeleteSong("Delete my song"),
-                                DeleteAlbum("Delete my album"),
+                                AddAlbum("Upload a new Album"),
+                                AddSong("Upload a new Song"),
+                                ListSong("List all of my Song"),
+                                ListAlbum("List all of my Albums"),
+                                ListSongInAlbum("List Song in one Album"),
+                                DeleteSong("Delete my Song"),
+                                DeleteAlbum("Delete my Album"),
+                                QueryCash("Query Cash")
                                 # CreateEvent("Create Study Event"),
                                 # ListEvent("List All Available Study Events"),
                                 # JoinEvent("Join Study Event"),

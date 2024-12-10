@@ -5,3 +5,4 @@ from .ArtistListSong import ListSong
 from .ArtistDeleteSong import DeleteSong
 from .ArtistListSongInAlbum import ListSongInAlbum
 from .ArtistDeleteAlbum import DeleteAlbum
+from .ArtistQueryCash import QueryCash
