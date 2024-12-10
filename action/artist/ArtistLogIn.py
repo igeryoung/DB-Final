@@ -1,7 +1,7 @@
 from ..Action import Action
 from role.Artist import Artist
 # from role.Admin import Admin
-from DB_utils_ping import fetch_artist_by_email
+from DB_utils import fetch_artist_by_email
 import re
 
 def is_valid_email(email):

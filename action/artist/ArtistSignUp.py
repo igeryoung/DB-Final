@@ -1,6 +1,6 @@
 from ..Action import Action
 from role.Artist import Artist
-from DB_utils_ping import db_register_artist, artist_email_exist, artist_name_exist
+from DB_utils import db_register_artist, artist_email_exist, artist_name_exist
 import re
 
 def is_valid_email(email):

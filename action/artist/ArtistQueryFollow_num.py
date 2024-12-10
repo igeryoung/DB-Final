@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import artist_query_follow_num
+from DB_utils import artist_query_follow_num
 ## Tested 
 class ArtistQueryFollow_num(Action):
     def exec(self, conn, user):

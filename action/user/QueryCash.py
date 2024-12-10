@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import query_cash
+from DB_utils import query_cash
 ## Tested 
 class QueryCash(Action):
     def exec(self, conn, user):

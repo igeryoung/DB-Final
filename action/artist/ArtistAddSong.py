@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import db_register_song
+from DB_utils import db_register_song
 
 class AddSong(Action):
     def exec(self, conn, user):

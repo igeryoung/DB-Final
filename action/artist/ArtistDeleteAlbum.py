@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import delete_album, query_album_id_by_title_and_artist
+from DB_utils import delete_album, query_album_id_by_title_and_artist
 
 class DeleteAlbum(Action):
     def exec(self, conn, user):

@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import deposit_cash
+from DB_utils import deposit_cash
 
 class Deposit(Action):
     def exec(self, conn, user):

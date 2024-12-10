@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import query_artist_id_by_name, unfollow_artist
+from DB_utils import query_artist_id_by_name, unfollow_artist
 ## Tested 
 class CancelFollowArtist(Action):
     def exec(self, conn, user):

@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import play_song, query_song_id_by_song_title, like_song_by_song_id
+from DB_utils import play_song, query_song_id_by_song_title, like_song_by_song_id
 import time
 ## Tested 
 class PlaySong(Action):

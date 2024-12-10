@@ -1,6 +1,6 @@
 import socket
 from threading import Thread
-from DB_utils_hcy import db_connect
+from DB_utils import db_connect
 from utils import *
 from action.user.ListSongFromPlaylist import ListSongFromPlaylist
 from action.user.AddSongToPlaylist import AddSongToPlaylist

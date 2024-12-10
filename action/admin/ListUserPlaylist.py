@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_hcy import list_user_playlist
+from DB_utils import list_user_playlist
 
 
 class ListUserPlaylist(Action):

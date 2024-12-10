@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import query_song_in_album
+from DB_utils import query_song_in_album
 ## Tested 
 class QuerySongInAlbum(Action):
     def exec(self, conn, user):

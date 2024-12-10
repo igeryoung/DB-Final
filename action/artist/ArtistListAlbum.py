@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import list_artist_album
+from DB_utils import list_artist_album
 
 class ListAlbum(Action):
     def exec(self, conn, user):

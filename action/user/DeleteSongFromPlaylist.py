@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_hcy import delete_song_from_playlist
+from DB_utils import delete_song_from_playlist
 ## Tested 
 class DeleteSongFromPlaylist(Action):
     def exec(self, conn, user):

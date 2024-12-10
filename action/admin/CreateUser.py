@@ -1,6 +1,6 @@
 from ..Action import Action
 from role.User import User
-from DB_utils_ping import db_register_user, user_name_exist, user_email_exist
+from DB_utils import db_register_user, user_name_exist, user_email_exist
 import re
 
 def is_valid_email(email):

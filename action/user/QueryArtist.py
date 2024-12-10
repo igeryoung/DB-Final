@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_hcy import query_artist
+from DB_utils import query_artist
 ## Tested 
 class QueryArtist(Action):
     def exec(self, conn, user):

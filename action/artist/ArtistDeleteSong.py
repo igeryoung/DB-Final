@@ -1,5 +1,5 @@
 from ..Action import Action
-from DB_utils_ping import delete_song_from_playlist, query_song_id_by_artist_id_and_title
+from DB_utils import delete_song_from_playlist, query_song_id_by_artist_id_and_title
 ## Tested 
 class DeleteSong(Action):
     def exec(self, conn, user):
