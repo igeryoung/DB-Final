@@ -15,9 +15,9 @@ def db_register_user(username, pwd, email):
     
 
     cmd = """
-            insert into "listener" (user_name, join_date, subscription_type, email, password, country, is_admin) 
+            insert into "listener" (listener_name, join_date, subscription_type, email, password, country, is_admin) 
             values (%s, CURRENT_DATE, 'F', %s, %s, 'Taiwan', false)
-            RETURNING user_id;
+            RETURNING listener_id;
             """
     cur.execute(cmd, [username, email, pwd])
 
@@ -30,7 +30,7 @@ def fetch_user_by_email(email):
     db, cur = get_global_db()
 
     cmd = f"""
-            SELECT user_id, user_name, password, is_admin
+            SELECT listener_id, listener_name, password, is_admin
             FROM listener
             WHERE email = '{email}';
             """
@@ -45,7 +45,7 @@ def user_name_exist(username):
 
     cmd = """
             select count(*) from "listener"
-            where user_name = %s;
+            where listener_name = %s;
             """
     # print(cur.mogrify(cmd, [username]))
     cur.execute(cmd, [username])
@@ -395,16 +395,16 @@ def query_song_id_by_song_title(title):
     else:
         return -1
 
-def play_song(user_id, song_id):
+def play_song(listener_id, song_id):
     db, cur = get_global_db()
     
-    print(user_id, song_id)
+    print(listener_id, song_id)
     # Step 1: Add 1 record to listen_history
     add_history_cmd = """
         INSERT INTO listen_history (listener_id, song_id, listen_time)
         VALUES (%s, %s, NOW());
     """
-    cur.execute(add_history_cmd, [int(user_id), int(song_id)])
+    cur.execute(add_history_cmd, [int(listener_id), int(song_id)])
     
     # Step 2: Increment the played_times for the song
     increment_played_times_cmd = """
@@ -432,44 +432,44 @@ def like_song_by_song_id(song_id):
 
 # ============================= Cash Operation =============================
 
-def deposit_cash(user_id, value):
+def deposit_cash(listener_id, value):
     db, cur = get_global_db()
     deposit_query = """
         UPDATE listener
         SET cash = cash + %s
-        WHERE user_id = %s;
+        WHERE listener_id = %s;
     """
-    cur.execute(deposit_query, [int(value), user_id])
+    cur.execute(deposit_query, [int(value), listener_id])
     db.commit()
 
-def query_cash(user_id):
+def query_cash(listener_id):
     db, cur = get_global_db()
     deposit_query = """
         SELECT cash
         From listener
-        WHERE user_id = %s;
+        WHERE listener_id = %s;
     """
-    cur.execute(deposit_query, [int(user_id)])
+    cur.execute(deposit_query, [int(listener_id)])
     result = cur.fetchone()
     return result[0]
 
-def donate_cash(user_id, artist_id, value):
+def donate_cash(listener_id, artist_id, value):
     db, cur = get_global_db()
 
     try:
         deduct_user_cash_query = """
             UPDATE listener
             SET cash = cash - %s
-            WHERE user_id = %s;
+            WHERE listener_id = %s;
         """
-        cur.execute(deduct_user_cash_query, [value, user_id])
+        cur.execute(deduct_user_cash_query, [value, listener_id])
 
         # Insert donation record
         insert_donation_query = """
             INSERT INTO donation (listener_id, artist_id, amount)
             VALUES (%s, %s, %s);
         """
-        cur.execute(insert_donation_query, [user_id, artist_id, value])
+        cur.execute(insert_donation_query, [listener_id, artist_id, value])
 
         # Add cash to artist
         update_artist_cash_query = """
@@ -487,20 +487,20 @@ def donate_cash(user_id, artist_id, value):
         db.rollback()
         return f"An error occurred: {e}"
     
-def artist_query_cash(user_id):
+def artist_query_cash(listener_id):
     db, cur = get_global_db()
     deposit_query = """
         SELECT cash
         From artist
         WHERE artist_id = %s;
     """
-    cur.execute(deposit_query, [int(user_id)])
+    cur.execute(deposit_query, [int(listener_id)])
     result = cur.fetchone()
     return result[0]
 
 # ============================= Follow Operation =============================
 
-def follow_artist(user_id, artist_id, name):
+def follow_artist(listener_id, artist_id, name):
     db, cur = get_global_db()
 
     try:
@@ -509,7 +509,7 @@ def follow_artist(user_id, artist_id, name):
             SELECT 1 FROM follow
             WHERE listener_id = %s AND artist_id = %s;
         """
-        cur.execute(check_follow_query, [user_id, artist_id])
+        cur.execute(check_follow_query, [listener_id, artist_id])
         result = cur.fetchone()
 
         if result:
@@ -520,7 +520,7 @@ def follow_artist(user_id, artist_id, name):
             INSERT INTO follow (listener_id, artist_id)
             VALUES (%s, %s);
         """
-        cur.execute(insert_follow_query, [user_id, artist_id])
+        cur.execute(insert_follow_query, [listener_id, artist_id])
 
         # Update artist's follow_num
         update_artist_follow_query = """
@@ -538,7 +538,7 @@ def follow_artist(user_id, artist_id, name):
         db.rollback()
         return f"An error occurred: {e}"
 
-def unfollow_artist(user_id, artist_id, name):
+def unfollow_artist(listener_id, artist_id, name):
     db, cur = get_global_db()
 
     try:
@@ -547,7 +547,7 @@ def unfollow_artist(user_id, artist_id, name):
             SELECT 1 FROM follow
             WHERE listener_id = %s AND artist_id = %s;
         """
-        cur.execute(check_follow_query, [user_id, artist_id])
+        cur.execute(check_follow_query, [listener_id, artist_id])
         result = cur.fetchone()
 
         if not result:
@@ -558,7 +558,7 @@ def unfollow_artist(user_id, artist_id, name):
             DELETE FROM follow
             WHERE listener_id = %s AND artist_id = %s;
         """
-        cur.execute(delete_follow_query, [user_id, artist_id])
+        cur.execute(delete_follow_query, [listener_id, artist_id])
 
         # Update artist's follow_num
         update_artist_follow_query = """
@@ -576,7 +576,7 @@ def unfollow_artist(user_id, artist_id, name):
         db.rollback()
         return f"An error occurred: {e}"
 
-def list_all_follow_artist(user_id):
+def list_all_follow_artist(listener_id):
     db, cur = get_global_db()
 
     try:
@@ -593,27 +593,27 @@ def list_all_follow_artist(user_id):
             ORDER BY a.artist_name;
         """
         
-        cur.execute(query, [user_id])
+        cur.execute(query, [listener_id])
         return print_table(cur)
     
     except Exception as e:
         return f"An error occurred: {e}"
     
-def artist_query_follow_num(user_id):
+def artist_query_follow_num(listener_id):
     db, cur = get_global_db()
     deposit_query = """
         SELECT follow_num
         From artist
         WHERE artist_id = %s;
     """
-    cur.execute(deposit_query, [int(user_id)])
+    cur.execute(deposit_query, [int(listener_id)])
     result = cur.fetchone()
     return result[0]
 
-def list_playlist(user_id):
+def list_playlist(listener_id):
     db, cur = get_global_db()
 
-    if user_id == 'All':
+    if listener_id == 'All':
         query = """
                 SELECT *
                 FROM Playlist
@@ -625,7 +625,7 @@ def list_playlist(user_id):
                 FROM Playlist
                 WHERE Listener_id = %s;
                 """
-        cur.execute(query, [user_id])
+        cur.execute(query, [listener_id])
 
     return print_table(cur)
 
@@ -700,12 +700,12 @@ def query_artist(artist_name):
 
     return print_table(cur)
 
-def create_playlist(user_id, playlist_title, playlist_description, public_or_not, commit=True):
+def create_playlist(listener_id, playlist_title, playlist_description, public_or_not, commit=True):
     db, cur = get_global_db()
     ## playlist_id 要拿掉
     query = f"""
             INSERT INTO PLAYLIST (listener_id, title, creation_date, description, is_public)
-            Values({user_id}, '{playlist_title}', CURRENT_DATE, '{playlist_description}', '{public_or_not}')
+            Values({listener_id}, '{playlist_title}', CURRENT_DATE, '{playlist_description}', '{public_or_not}')
             RETURNING Playlist_id;
             """
     # print(cur.mogrify(query))
@@ -716,7 +716,7 @@ def create_playlist(user_id, playlist_title, playlist_description, public_or_not
         db.commit()
     return playlist_id
 
-def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
+def add_song_to_playlist(listener_id, playlist_id, song_id, commit=True):
     db, cur = get_global_db()
     
     query = f"""
@@ -726,7 +726,7 @@ def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
                 SELECT 1
                 FROM playlist
                 WHERE playlist.playlist_id = {playlist_id}
-                AND playlist.listener_id = {user_id}
+                AND playlist.listener_id = {listener_id}
             )
             RETURNING playlist_id;
             """
@@ -739,7 +739,7 @@ def add_song_to_playlist(user_id, playlist_id, song_id, commit=True):
         db.commit()
     return return_playlist_id
 
-def delete_song_from_playlist(user_id, playlist_id, song_id, commit=True):
+def delete_song_from_playlist(listener_id, playlist_id, song_id, commit=True):
     db, cur = get_global_db()
     query =f"""
             DELETE FROM playlist_contain
@@ -749,7 +749,7 @@ def delete_song_from_playlist(user_id, playlist_id, song_id, commit=True):
                 SELECT 1
                 FROM playlist
                 WHERE playlist.playlist_id = playlist_contain.playlist_id
-                AND playlist.listener_id = {user_id}
+                AND playlist.listener_id = {listener_id}
             );
             """
     
@@ -758,9 +758,9 @@ def delete_song_from_playlist(user_id, playlist_id, song_id, commit=True):
         db.commit()
     return
        
-def list_user_history(user_id):
+def list_user_history(listener_id):
     db, cur = get_global_db()
-    if(user_id == "All"):
+    if(listener_id == "All"):
         query = """
                 SELECT *
                 FROM listen_history
@@ -771,16 +771,16 @@ def list_user_history(user_id):
         query = f"""
                 SELECT *
                 FROM listen_history
-                WHERE listener_id = {user_id}
+                WHERE listener_id = {listener_id}
                 ORDER BY listener_id ASC, song_id ASC, listen_time ASC;
                 """
         cur.execute(query)
 
     return print_table(cur)
 
-def list_user_playlist(user_id):
+def list_user_playlist(listener_id):
     db, cur = get_global_db()
-    if(user_id == "All"):
+    if(listener_id == "All"):
         print("All")
         query = """
                 SELECT * FROM public.playlist
@@ -793,29 +793,29 @@ def list_user_playlist(user_id):
                 WHERE listener_id = %s
                 ORDER BY playlist_id ASC 
                 """
-        cur.execute(query, [user_id])
+        cur.execute(query, [listener_id])
 
     return print_table(cur)
 
 # ============================= Activity Operation =============================
 
-def artist_activity_exist(user_id, activity_title):
+def artist_activity_exist(listener_id, activity_title):
     db, cur = get_global_db()
     query = """
         SELECT 1 FROM artist_activity 
         WHERE artist_id = %s AND title = %s;
     """
-    cur.execute(query, [user_id, activity_title])
+    cur.execute(query, [listener_id, activity_title])
     return cur.fetchone() is not None
 
-def db_register_activity(user_id, title, description, location, event_date):
+def db_register_activity(listener_id, title, description, location, event_date):
     db, cur = get_global_db()
     try:
         query = """
             INSERT INTO artist_activity (artist_id, title, description, location, event_date)
             VALUES (%s, %s, %s, %s, %s);
         """
-        cur.execute(query, [user_id, title, description, location, event_date])
+        cur.execute(query, [listener_id, title, description, location, event_date])
         db.commit()
         return True
     except Exception as e:
@@ -823,14 +823,14 @@ def db_register_activity(user_id, title, description, location, event_date):
         db.rollback()
         return False
     
-def artist_query_activity(user_id):
+def artist_query_activity(listener_id):
     db, cur = get_global_db()
 
     # Query to fetch activities for the logged-in artist
     query = f"""
         SELECT title, description, location, event_date, created_at
         FROM artist_activity
-        WHERE artist_id = {user_id}
+        WHERE artist_id = {listener_id}
         ORDER BY event_date DESC;
     """
 
@@ -881,7 +881,7 @@ def list_listener(uid):
         query = """
             SELECT *
             FROM listener
-            ORDER BY user_id ASC
+            ORDER BY listener_id ASC
             FOR SHARE NOWAIT;
         """
         cur.execute(query)
@@ -890,8 +890,8 @@ def list_listener(uid):
         query = f"""
             SELECT *
             FROM listener
-            WHERE user_id = '{int(uid)}'
-            ORDER BY user_id ASC;
+            WHERE listener_id = '{int(uid)}'
+            ORDER BY listener_id ASC;
         """
         cur.execute(query)
     return print_table(cur)
@@ -918,26 +918,26 @@ def list_artist(uid):
         cur.execute(query)
     return print_table(cur)
 
-def check_listener_exists(user_id):
+def check_listener_exists(listener_id):
         """Check if the listener exists in the database."""
         db, cur = get_global_db()
         query = """
             SELECT 1
             FROM listener
-            WHERE user_id = %s;
+            WHERE listener_id = %s;
         """
-        cur.execute(query, [user_id])
+        cur.execute(query, [listener_id])
         result = cur.fetchone()
         return result is not None
 
-def delete_listener_by_id(user_id):
+def delete_listener_by_id(listener_id):
     """Delete listener from the database."""
     db, cur = get_global_db()
     query = """
         DELETE FROM listener
-        WHERE user_id = %s;
+        WHERE listener_id = %s;
     """
-    cur.execute(query, [user_id])
+    cur.execute(query, [listener_id])
     db.commit()
 
     # Optionally, handle cascading deletions if necessary (e.g., playlists, follow relations, etc.)
@@ -946,18 +946,18 @@ def delete_listener_by_id(user_id):
         DELETE FROM playlist
         WHERE listener_id = %s;
     """
-    cur.execute(delete_playlists_query, [user_id])
+    cur.execute(delete_playlists_query, [listener_id])
 
     # Delete associated follow relationships
     delete_follow_query = """
         DELETE FROM follow
         WHERE listener_id = %s;
     """
-    cur.execute(delete_follow_query, [user_id])
+    cur.execute(delete_follow_query, [listener_id])
 
     db.commit()
 
-def check_artist_exists(user_id):
+def check_artist_exists(listener_id):
     """Check if the artist exists in the database."""
     db, cur = get_global_db()
     query = """
@@ -965,11 +965,11 @@ def check_artist_exists(user_id):
         FROM artist
         WHERE artist_id = %s;
     """
-    cur.execute(query, [user_id])
+    cur.execute(query, [listener_id])
     result = cur.fetchone()
     return result is not None
 
-def delete_artist_by_id(user_id):
+def delete_artist_by_id(listener_id):
     """Delete artist and associated data from the database."""
     db, cur = get_global_db()
     
@@ -978,35 +978,35 @@ def delete_artist_by_id(user_id):
         DELETE FROM song
         WHERE artist_id = %s;
     """
-    cur.execute(delete_songs_query, [user_id])
+    cur.execute(delete_songs_query, [listener_id])
     
     # Delete albums by the artist
     delete_albums_query = """
         DELETE FROM album
         WHERE artist_id = %s;
     """
-    cur.execute(delete_albums_query, [user_id])
+    cur.execute(delete_albums_query, [listener_id])
     
     # Delete artist activities
     delete_activities_query = """
         DELETE FROM artist_activity
         WHERE artist_id = %s;
     """
-    cur.execute(delete_activities_query, [user_id])
+    cur.execute(delete_activities_query, [listener_id])
     
     # Delete follow relationships for the artist
     delete_follows_query = """
         DELETE FROM follow
         WHERE artist_id = %s;
     """
-    cur.execute(delete_follows_query, [user_id])
+    cur.execute(delete_follows_query, [listener_id])
     
     # Finally, delete the artist from the artist table
     delete_artist_query = """
         DELETE FROM artist
         WHERE artist_id = %s;
     """
-    cur.execute(delete_artist_query, [user_id])
+    cur.execute(delete_artist_query, [listener_id])
     
     # Commit all changes
     db.commit()
