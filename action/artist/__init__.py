@@ -7,3 +7,6 @@ from .ArtistListSongInAlbum import ListSongInAlbum
 from .ArtistDeleteAlbum import DeleteAlbum
 from .ArtistQueryCash import QueryCash
 from .ArtistQueryFollow_num import ArtistQueryFollow_num
+from .ArtistAddActivity import AddActivity
+from .ArtistQueryActivity import QueryActivity
+from .ArtistDeleteActivity import DeleteActivity

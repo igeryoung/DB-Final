@@ -339,15 +339,21 @@ def delete_song_from_playlist(song_id):
     query =f"""
             DELETE FROM listen_history
             WHERE song_id = {song_id};
+            """
+    cur.execute(query)
 
+    query =f"""
             DELETE FROM playlist_contain
             WHERE song_id = {song_id};
+            """
+    cur.execute(query)
 
+    query =f"""
             DELETE FROM song
             WHERE song_id = {song_id};
             """
-    
     cur.execute(query)
+
     db.commit()
 
 def query_song_id_by_song_title(title):
@@ -578,3 +584,68 @@ def artist_query_follow_num(user_id):
     cur.execute(deposit_query, [int(user_id)])
     result = cur.fetchone()
     return result[0]
+
+# ============================= Activity Operation =============================
+
+def artist_activity_exist(user_id, activity_title):
+    db, cur = get_global_db()
+    query = """
+        SELECT 1 FROM artist_activity 
+        WHERE artist_id = %s AND title = %s;
+    """
+    cur.execute(query, [user_id, activity_title])
+    return cur.fetchone() is not None
+
+def db_register_activity(user_id, title, description, location, event_date):
+    db, cur = get_global_db()
+    try:
+        query = """
+            INSERT INTO artist_activity (artist_id, title, description, location, event_date)
+            VALUES (%s, %s, %s, %s, %s);
+        """
+        cur.execute(query, [user_id, title, description, location, event_date])
+        db.commit()
+        return True
+    except Exception as e:
+        print(f"Database error: {e}")
+        db.rollback()
+        return False
+    
+def artist_query_activity(user_id):
+    db, cur = get_global_db()
+
+    # Query to fetch activities for the logged-in artist
+    query = f"""
+        SELECT title, description, location, event_date, created_at
+        FROM artist_activity
+        WHERE artist_id = {user_id}
+        ORDER BY event_date DESC;
+    """
+
+    cur.execute(query)
+    return print_table(cur)
+
+# Query activity ID by artist ID and title
+def query_activity_id_by_artist_id_and_title(artist_id, title):
+    db, cur = get_global_db()
+    query = """
+        SELECT activity_id FROM artist_activity
+        WHERE artist_id = %s AND title = %s;
+    """
+    cur.execute(query, [artist_id, title])
+    result = cur.fetchone()
+    return result[0] if result else -1
+
+# Delete activity by ID
+def delete_activity_by_id(activity_id):
+    db, cur = get_global_db()
+    try:
+        query = """
+            DELETE FROM artist_activity
+            WHERE activity_id = %s;
+        """
+        cur.execute(query, [activity_id])
+        db.commit()
+    except Exception as e:
+        print(f"Database error: {e}")
+        db.rollback()
