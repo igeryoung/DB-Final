@@ -6,9 +6,9 @@ from action import UserLogIn, UserSignUp, ArtistSignUp, ArtistLogIn
 
 
 welcome_action = [
-    UserLogIn("Log in as an [User]"), 
+    UserLogIn("Log in as an [Listener]"), 
     ArtistLogIn("Log in as an [Artist]"),
-    UserSignUp("Sign up as an [User]"), 
+    UserSignUp("Sign up as an [Listener]"), 
     ArtistSignUp("Sign up as an [Artist]")
 ]
 
